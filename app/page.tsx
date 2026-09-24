@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./page.module.css";
 
 // DEAF and JOBS paths, lifted from deafjobs-wordmark-outlined.svg and split
@@ -112,9 +113,9 @@ export default function Home() {
                 <a href="#">How it works</a>
               </li>
               <li>
-                <a href="#">
+                <Link href="/profile/new">
                   <span className={styles.full}>Your </span>profile
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#">Resources</a>
@@ -186,12 +187,12 @@ export default function Home() {
               </li>
             </ul>
           </nav>
-
-          <p className={styles.footnote}>
-            Federal law and tax credits already cover this. You&rsquo;re not doing anything
-            unusual.
-          </p>
         </div>
+
+        <p className={styles.footnote}>
+          Federal law and tax credits already cover this. You&rsquo;re not doing anything
+          unusual.
+        </p>
       </section>
     </div>
   );
