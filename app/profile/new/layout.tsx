@@ -14,6 +14,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
             <span className={styles.srOnly}>DEAFJOBS home</span>
             <span aria-hidden="true">DEAFJOBS</span>
           </Link>
+          <p className={styles.headerZone}>For Deaf &amp; hard of hearing job seekers</p>
         </div>
       </header>
       <main id="main" className={styles.main}>

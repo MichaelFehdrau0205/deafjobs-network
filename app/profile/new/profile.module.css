@@ -1,13 +1,14 @@
 .shell {
   --green: #00e87a;
   --blue: #1400e6;
-  --ink: #14142e; /* body text, 16:1 on white */
-  --muted: #4b4b6b; /* hints, 8:1 on white */
-  --line: #5a5a80; /* field borders, 6.7:1 on white (needs 3:1) */
-  --error: #b00020; /* 7.3:1 on white */
+  --ink: #14142e; /* body text, still 15.6:1 on this page background */
+  --muted: #4b4b6b; /* hints, 7.7:1 on this page background */
+  --line: #5a5a80; /* field borders, 6.4:1 on this page background (needs 3:1) */
+  --error: #b00020; /* 7.1:1 on this page background */
+  --page: #f0f0f5; /* the page itself: soft grey, so white boxes read as boxes */
 
   min-height: 100vh;
-  background: #fff;
+  background: var(--page);
   color: var(--ink);
 }
 
@@ -55,17 +56,29 @@
 .headerInner {
   max-width: 40rem;
   margin-inline: auto;
+  padding-block: 0.6rem;
   padding-inline: clamp(1rem, 5vw, 2rem);
 }
 .brand {
   display: inline-flex;
   align-items: center;
-  min-height: 56px;
+  min-height: 44px;
   color: var(--blue);
   font-weight: 800;
   font-size: 1.25rem;
   letter-spacing: 0.04em;
   text-decoration: none;
+}
+/* Same eyebrow the landing page uses for its candidate zone ("For Deaf &
+   hard of hearing candidates") -- carried into the profile builder so it's
+   never ambiguous who this flow is for, even landed on directly. */
+.headerZone {
+  margin: 0.1rem 0 0;
+  font-size: clamp(0.62rem, 1.1vw, 0.72rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
 }
 /* on green, the ring has to be blue-on-green (it is) but needs a white gap
    to read; offset does that */
@@ -262,6 +275,7 @@
 .summary {
   margin: 0 0 2rem;
   padding: 1rem 1.1rem;
+  background: #fff;
   border: 3px solid var(--error);
   border-radius: 6px;
 }
@@ -412,7 +426,7 @@
 .panel {
   margin: 0 0 2rem;
   padding: 1.1rem 1.25rem;
-  background: #f5f5fb;
+  background: #fff;
   border: 2px solid var(--line);
   border-radius: 10px;
 }
@@ -613,6 +627,7 @@
 }
 .cue {
   padding: 0.9rem 1rem;
+  background: #fff;
   border: 2px solid var(--line);
   border-radius: 10px;
 }
@@ -682,6 +697,7 @@
 .confirm {
   margin: 1.5rem 0;
   padding: 1rem 1.1rem;
+  background: #fff;
   border: 2px solid var(--line);
   border-radius: 10px;
 }
