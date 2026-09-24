@@ -127,9 +127,9 @@ export default function Home() {
           </nav>
 
           <p className={styles.copy}>
-            <strong>Every job here is open to you first.</strong> Hearing applicants
+            <strong>Every job here is open to you first.</strong> Hearing ap&shy;pli&shy;cants
             don&rsquo;t see these postings. Every employer answered real questions before
-            they could post &mdash; you see their answers before you apply.{" "}
+            they could post. You see their answers before you apply.{" "}
             <strong>Apply for the job you actually want.</strong>
           </p>
 
@@ -157,11 +157,14 @@ export default function Home() {
 
           <p className={styles.copy}>
             <strong>You&rsquo;ve probably passed on a Deaf candidate without meaning to.</strong>{" "}
-            Not prejudice &mdash; just not knowing how it would work. Captioning comes with
+            Not prejudice. Just not knowing how it would work. Cap&shy;tion&shy;ing comes with
             your posting. The support is a few minutes, not a full-time condition. And you
-            won&rsquo;t figure it out alone &mdash; they&rsquo;ve done this more times than
+            won&rsquo;t figure it out alone. They&rsquo;ve done this more times than
             you have. Then the training ends, and you just have an employee.{" "}
-            <strong>Post a role. Answer four questions.</strong>
+            {/* Each closing sentence is unbreakable (white-space: nowrap), so a
+                line can end between them but never inside one. */}
+            <strong className={styles.sentence}>Post a role.</strong>{" "}
+            <strong className={styles.sentence}>Answer four questions.</strong>
           </p>
 
           <nav aria-label="Employer navigation">

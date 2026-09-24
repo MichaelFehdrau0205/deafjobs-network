@@ -203,6 +203,9 @@
     white-space: normal;
     row-gap: 0.3em;
   }
+  .links a {
+    white-space: pre-wrap;
+  }
   .top .links,
   .bottom .links {
     font-size: clamp(0.68rem, 3.4vw, 0.85rem);
@@ -228,6 +231,10 @@
   justify-content: center;
   min-height: 44px;
   min-width: 44px;
+  /* In a flex container the trailing space in <span>The </span> is dropped,
+     gluing "THE" to "COMMITMENT". Preserve it. (Wrapping inside a link is
+     re-allowed on phones below, where the row itself wraps.) */
+  white-space: pre;
   color: inherit;
   text-decoration: none;
   text-transform: uppercase;
@@ -257,11 +264,20 @@
   font-size: var(--body);
   line-height: 1.42;
   text-align: justify;
-  hyphens: auto;
+  /* No automatic hyphenation: words stay whole. The only allowed breaks are
+     the soft hyphens (&shy;) placed by hand in page.tsx -- one long word per
+     paragraph -- so a paragraph shows at most one hyphen. */
+  hyphens: manual;
+  text-wrap: pretty;
   margin: 0;
 }
 .copy strong {
   font-weight: 700;
+}
+/* The two closing sentences of the employer paragraph stay in one piece: a
+   line may end between them, never inside one. */
+.sentence {
+  white-space: nowrap;
 }
 
 /* ---------- footnote ---------- */
