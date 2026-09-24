@@ -65,26 +65,9 @@ export function CaptionsStep() {
     if (summaryKey > 0) summaryRef.current?.focus();
   }, [summaryKey]);
 
-  if (!video) {
-    return (
-      <>
-        <Progress current={3} />
-        <FocusHeading className={styles.title}>Captions</FocusHeading>
-        <p className={styles.intro}>
-          There&rsquo;s no video yet, so there&rsquo;s nothing to caption.
-        </p>
-        <div className={styles.actions}>
-          <Link className={styles.button} href="/profile/new/video">
-            Add a video
-          </Link>
-          <Link className={styles.linkAction} href="/profile/new/review">
-            Continue without a video
-          </Link>
-        </div>
-      </>
-    );
-  }
-  if (!video.mode) {
+  // Video is required, so there's nothing to caption without one — send the
+  // candidate back rather than offering a way around it.
+  if (!video || !video.mode) {
     router.replace("/profile/new/video");
     return null;
   }
@@ -163,7 +146,7 @@ export function CaptionsStep() {
       confirmed: true,
       forMode: video!.mode,
     });
-    router.push("/profile/new/review");
+    router.push("/profile/new/resume");
   }
 
   const problems: { href: string; text: string }[] = [];

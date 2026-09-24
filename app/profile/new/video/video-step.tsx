@@ -207,8 +207,10 @@ export function VideoStep() {
       <Progress current={2} />
       <FocusHeading className={styles.title}>Add a short video</FocusHeading>
       <p className={styles.intro}>
-        A video lets employers meet you before they read your resume. Sign or speak,
-        whichever is natural for you. Up to {MAX_SECONDS} seconds.
+        A video is required. It lets employers meet you before they read your
+        resume, and lets a hiring manager decide from something real instead of a
+        guess. Sign or speak, whichever is natural for you. Up to {MAX_SECONDS}{" "}
+        seconds.
       </p>
 
       <p className={styles.srOnly} role="status" aria-live="polite">
@@ -402,17 +404,6 @@ export function VideoStep() {
           Back
         </Link>
       </div>
-
-      {!video && (
-        <p className={styles.skipRow}>
-          <Link className={styles.linkAction} href="/profile/new/review">
-            Skip the video for now
-          </Link>
-          <span className={styles.hint}>
-            Video is optional. You can add one later.
-          </span>
-        </p>
-      )}
     </>
   );
 }

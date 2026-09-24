@@ -6,17 +6,18 @@ import { useProfileDraft, formatTime } from "../profile-context";
 import styles from "../profile.module.css";
 
 // End of the demo build: a preview of what an employer would see, and
-// confirmation that the caption gate did its job. Publishing, resume upload
-// and skills are out of scope for this build (see DEAFJOBS-DEMO-STARTER.md).
+// confirmation that the caption gate did its job. Publishing, skills, and
+// communication preferences are out of scope for this build (see
+// DEAFJOBS-DEMO-STARTER.md).
 export default function ReviewPage() {
-  const { basics, video, captions } = useProfileDraft();
+  const { basics, video, captions, resume } = useProfileDraft();
 
   return (
     <>
       <FocusHeading className={styles.title}>Looking good</FocusHeading>
       <p className={styles.intro}>
         Here&rsquo;s what an employer would see so far. In the full product this
-        is where you&rsquo;d add your resume and skills next.
+        is where you&rsquo;d add your skills and communication preferences next.
       </p>
 
       <section aria-labelledby="preview-title" className={styles.panel}>
@@ -64,9 +65,31 @@ export default function ReviewPage() {
         )}
       </section>
 
+      <section aria-labelledby="resume-title" className={styles.panel}>
+        <h2 id="resume-title" className={styles.panelTitle}>
+          Resume
+        </h2>
+        {resume ? (
+          <>
+            <p className={styles.hint}>{resume.fileName}</p>
+            <details className={styles.details}>
+              <summary>Read the resume text</summary>
+              <p className={styles.transcript} style={{ whiteSpace: "pre-wrap" }}>
+                {resume.text}
+              </p>
+            </details>
+          </>
+        ) : (
+          <p className={styles.hint}>No resume added.</p>
+        )}
+      </section>
+
       <div className={styles.actions}>
         <Link className={styles.linkAction} href="/profile/new/video">
           Edit video
+        </Link>
+        <Link className={styles.linkAction} href="/profile/new/resume">
+          Edit resume
         </Link>
         <Link className={styles.linkAction} href="/">
           Back to home

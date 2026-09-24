@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { VideoStep } from "./video-step";
+import { ResumeStep } from "./resume-step";
 
 export const metadata: Metadata = {
-  title: "Step 2 of 4: Video — DEAFJOBS",
+  title: "Step 4 of 4: Resume — DEAFJOBS",
 };
 
 export default function Page() {
-  return <VideoStep />;
+  return <ResumeStep />;
 }

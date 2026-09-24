@@ -1,10 +1,10 @@
 import styles from "./profile.module.css";
 
-const STEPS = ["Basics", "Video", "Captions"] as const;
+const STEPS = ["Basics", "Video", "Captions", "Resume"] as const;
 
-// "Step N of 3" is the real indicator (plain text); the bar is a visual echo of
+// "Step N of 4" is the real indicator (plain text); the bar is a visual echo of
 // it, so nothing depends on colour alone.
-export function Progress({ current }: { current: 1 | 2 | 3 }) {
+export function Progress({ current }: { current: 1 | 2 | 3 | 4 }) {
   return (
     <div className={styles.progress}>
       <p className={styles.stepText}>
