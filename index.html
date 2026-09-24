@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEAFJOBS — Jobs open to Deaf candidates first</title>
+<meta name="description" content="A job platform where Deaf and hard-of-hearing candidates get first access to postings, and employers commit to what supporting a Deaf hire actually requires.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#00E87A;
+    --blue:#1400E6;
+    --pad:clamp(1.4rem, 6vw, 5.5rem);
+    --body:clamp(1rem, 2.05vw, 1.6rem);
+    --measure:64rem;
+    /* actual rendered width of the wordmark, and the room each panel
+       must reserve for the half that hangs across the seam */
+    --markw:min(var(--measure), calc(100vw - 2 * var(--pad)));
+    --markgap:calc(var(--markw) * 0.30);
+  }
+
+  *{box-sizing:border-box}
+  html{ -webkit-text-size-adjust:100% }
+
+  body{
+    margin:0;
+    font-family:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;
+    background:var(--blue);
+    font-weight:500;
+  }
+
+  .skip{
+    position:absolute; left:-9999px;
+    background:#000; color:#fff;
+    padding:.75rem 1.25rem; z-index:99;
+    font-weight:700; text-decoration:none;
+  }
+  .skip:focus{ left:1rem; top:1rem }
+
+  /* ---------- halves ---------- */
+  .half{
+    position:relative;
+    overflow:hidden;
+    min-height:50vh;
+    padding:var(--pad);
+    display:flex;
+    flex-direction:column;
+  }
+  .top{
+    background:var(--green);
+    color:var(--blue);
+    justify-content:flex-end;
+    padding-bottom:var(--markgap);
+  }
+  .bottom{
+    color:var(--green);
+    justify-content:flex-start;
+    padding-top:var(--markgap);
+    /* No background of its own: the page body is already blue, so there is
+       only ONE painted edge in the whole design — the bottom of the green
+       panel — instead of two edges meeting on a fractional pixel. */
+    background:transparent;
+  }
+
+  .inner{ width:100%; max-width:var(--measure); margin-inline:auto }
+
+  /* ---------- wordmark ---------- */
+  /* SVG textLength forces DEAF and JOBS to identical width, flush on both
+     edges — the same margins as the copy block above it. */
+  .markwrap{
+    position:absolute;
+    left:var(--pad);
+    right:var(--pad);
+    max-width:var(--measure);
+    margin-inline:auto;
+    margin-block:0;
+    pointer-events:none;
+    line-height:0;
+  }
+  /* x / textLength are compensated for glyph side bearings so the INK of both
+     words spans exactly 0-1000 — flush with the copy block above.
+     One line, no seam: DEAF's ink bottom, JOBS' ink top and the colour divide
+     all sit at 266.11 of 543.11 (49%). Nothing crosses the divide, so no part
+     of a letter changes colour part-way up and no gap shows between them. */
+  .top .markwrap{ bottom:0; transform:translateY(51%) }
+  .bottom .markwrap{ top:0; transform:translateY(-49%) }
+
+  .mark{ display:block; width:100%; height:auto; overflow:visible }
+  .mark text{
+    font-family:"Poppins",system-ui,sans-serif;
+    font-weight:900;
+    font-size:385px;
+    fill:currentColor;
+  }
+
+  /* ---------- zone label ---------- */
+  /* the split is communicated by text, not by colour alone */
+  .zone{
+    font-size:clamp(.62rem,1.1vw,.8rem);
+    font-weight:700;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    opacity:.85;
+  }
+  /* the two headers mirror each other across the seam:
+     green = text, header, DEAF · blue = JOBS, header, text */
+  .top .zone{ margin:clamp(.8rem,1.8vw,1.4rem) 0 0 }
+  .bottom .zone{ margin:0 0 clamp(.8rem,1.8vw,1.4rem) }
+
+  /* ---------- nav ---------- */
+  .links{
+    display:flex;
+    flex-wrap:nowrap;            /* one line, always */
+    white-space:nowrap;
+    justify-content:flex-end;
+    align-items:center;
+    margin:0 0 clamp(1rem,2.2vw,1.8rem);
+    padding:0;
+    list-style:none;
+    font-weight:700;
+    letter-spacing:.03em;
+  }
+  /* squeeze to fit the viewport: each row gets the largest size that still
+     keeps all five links on a single line */
+  .top .links{ font-size:min(.95rem, calc(var(--markw) / 37.5)) }
+  .bottom .links{ font-size:min(.95rem, calc(var(--markw) / 41)) }
+  /* narrow screens drop to shorter labels so the single line stays legible */
+  .short{ display:none }
+  @media (max-width:699px){
+    .full{ display:none }
+    .short{ display:inline }
+    .top .links{ font-size:min(.95rem, calc(var(--markw) / 30)) }
+    .bottom .links{ font-size:min(.95rem, calc(var(--markw) / 34.6)) }
+  }
+  .bottom .links{ margin:clamp(1rem,2.2vw,1.8rem) 0 0 }
+  .links li{ display:flex; align-items:center }
+  .links li + li::before{ content:"·"; padding:0 .34em; opacity:.6 }
+  .links a{
+    color:inherit;
+    text-decoration:none;
+    text-transform:uppercase;
+    padding:.35em 0;
+    border-top:2px solid transparent;
+    border-bottom:2px solid transparent;
+  }
+  /* the rule sits on the side facing away from the wordmark:
+     above on the candidate row, below on the employer row */
+  .top .links a:hover,
+  .top .links a:focus-visible{ border-top-color:currentColor }
+  .bottom .links a:hover,
+  .bottom .links a:focus-visible{ border-bottom-color:currentColor }
+
+  a:focus-visible{
+    outline:3px solid currentColor;
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  /* ---------- body copy ---------- */
+  .copy{
+    font-size:var(--body);
+    line-height:1.42;
+    text-align:justify;
+    hyphens:auto;
+    margin:0;
+  }
+  .copy strong{ font-weight:700 }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ transition:none !important; animation:none !important }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#employers">Skip to the section for employers</a>
+
+<!-- ============ TOP · GREEN · CANDIDATES ============ -->
+<section class="half top" id="candidates" aria-labelledby="candidates-zone">
+  <div class="inner">
+
+    <nav aria-label="Candidate navigation">
+      <ul class="links">
+        <li><a href="#"><span class="full">Browse jobs</span><span class="short">Jobs</span></a></li>
+        <li><a href="#">How it works</a></li>
+        <li><a href="#"><span class="full">Your </span>profile</a></li>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">Sign in</a></li>
+      </ul>
+    </nav>
+
+    <p class="copy"><strong>Every job here is open to you first.</strong> Hearing applicants don&rsquo;t see these postings. Every employer answered real questions before they could post &mdash; you see their answers before you apply. <strong>Apply for the job you actually want.</strong></p>
+
+    <p class="zone" id="candidates-zone">For Deaf &amp; hard of hearing candidates</p>
+
+  </div>
+
+  <h1 class="markwrap">
+    <svg class="mark" viewBox="0 0 1000 543.11" role="img" aria-label="DEAFJOBS">
+      <text x="-24.87" y="266.11" textLength="1036.27" lengthAdjust="spacingAndGlyphs">DEAF</text>
+      <text x="-10.27" y="540.11" textLength="1026.69" lengthAdjust="spacingAndGlyphs">JOBS</text>
+    </svg>
+  </h1>
+</section>
+
+<!-- ============ BOTTOM · BLUE · EMPLOYERS ============ -->
+<section class="half bottom" id="employers" aria-labelledby="employers-zone">
+
+  <div class="markwrap" aria-hidden="true">
+    <svg class="mark" viewBox="0 0 1000 543.11">
+      <text x="-24.87" y="266.11" textLength="1036.27" lengthAdjust="spacingAndGlyphs">DEAF</text>
+      <text x="-10.27" y="540.11" textLength="1026.69" lengthAdjust="spacingAndGlyphs">JOBS</text>
+    </svg>
+  </div>
+
+  <div class="inner">
+
+    <p class="zone" id="employers-zone">For employers &amp; hiring managers</p>
+
+    <p class="copy"><strong>You&rsquo;ve probably passed on a Deaf candidate without meaning to.</strong> Not prejudice &mdash; just not knowing how it would work. Captioning comes with your posting. The support is a few minutes, not a full-time condition. And you won&rsquo;t figure it out alone &mdash; they&rsquo;ve done this more times than you have. Then the training ends, and you just have an employee. <strong>Post a role. Answer four questions.</strong></p>
+
+    <nav aria-label="Employer navigation">
+      <ul class="links">
+        <li><a href="#">Post a role</a></li>
+        <li><a href="#"><span class="full">The </span>commitment</a></li>
+        <li><a href="#"><span class="full">What it </span>costs</a></li>
+        <li><a href="#">How it works</a></li>
+        <li><a href="#">Sign in</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</section>
+
+</body>
+</html>
