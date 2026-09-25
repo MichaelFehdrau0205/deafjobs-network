@@ -102,7 +102,7 @@ export function ResumeStep() {
 
   return (
     <>
-      <Progress current={4} />
+      <Progress current={2} />
       <FocusHeading className={styles.title}>Add your resume</FocusHeading>
       <p className={styles.intro}>
         Upload a PDF or Word file and we&rsquo;ll pull out the text for you to check.

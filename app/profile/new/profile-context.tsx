@@ -211,7 +211,7 @@ export const COMMUTE_LABELS: Record<Exclude<CommuteRange, "">, string> = {
 
 export const COMM_PREFERENCE_LABELS: Record<Exclude<CommPreference, "">, string> = {
   deaf: "Deaf",
-  "hard-of-hearing": "Hard of hearing",
+  "hard-of-hearing": "Hard of Hearing",
   asl: "ASL preferred",
   english: "English preferred",
   both: "Both ASL and English",
