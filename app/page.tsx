@@ -105,10 +105,10 @@ export default function Home() {
           <nav aria-label="Candidate navigation">
             <ul className={styles.links}>
               <li>
-                <a href="#">
+                <Link href="/jobs">
                   <span className={styles.full}>Browse jobs</span>
                   <span className={styles.short}>Jobs</span>
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#">How it works</a>

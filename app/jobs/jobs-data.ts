@@ -1,0 +1,126 @@
+// Demo listings only — for this build, no real employers or postings exist
+// yet. NYC/NJ/CT, matching the areas this demo is scoped to.
+export type Job = {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  remote: boolean;
+  salaryRange: string;
+  commitmentCount: number;
+  hiredDeafBefore: boolean;
+  tags: string[];
+};
+
+export const JOBS: Job[] = [
+  {
+    id: "1",
+    title: "Warehouse Associate",
+    company: "Northbridge Logistics",
+    location: "Bushwick, Brooklyn, NY",
+    remote: false,
+    salaryRange: "$20–$24/hr",
+    commitmentCount: 5,
+    hiredDeafBefore: true,
+    tags: ["warehouse", "logistics", "entry-level"],
+  },
+  {
+    id: "2",
+    title: "Front Desk Coordinator",
+    company: "Harbor View Dental",
+    location: "Stamford, CT",
+    remote: false,
+    salaryRange: "$19–$22/hr",
+    commitmentCount: 4,
+    hiredDeafBefore: false,
+    tags: ["front desk", "admin", "healthcare"],
+  },
+  {
+    id: "3",
+    title: "Data Entry Specialist",
+    company: "Meridian Insurance Group",
+    location: "Newark, NJ",
+    remote: true,
+    salaryRange: "$45,000–$52,000/yr",
+    commitmentCount: 6,
+    hiredDeafBefore: true,
+    tags: ["data entry", "remote", "admin"],
+  },
+  {
+    id: "4",
+    title: "Graphic Designer",
+    company: "Palette & Co.",
+    location: "Brooklyn, NY",
+    remote: true,
+    salaryRange: "$58,000–$68,000/yr",
+    commitmentCount: 5,
+    hiredDeafBefore: false,
+    tags: ["design", "creative", "remote"],
+  },
+  {
+    id: "5",
+    title: "Fulfillment Team Lead",
+    company: "Northbridge Logistics",
+    location: "Elizabeth, NJ",
+    remote: false,
+    salaryRange: "$24–$28/hr",
+    commitmentCount: 5,
+    hiredDeafBefore: true,
+    tags: ["warehouse", "logistics", "team lead", "management"],
+  },
+  {
+    id: "6",
+    title: "Quality Assurance Tester",
+    company: "Foghorn Software",
+    location: "New Haven, CT",
+    remote: true,
+    salaryRange: "$55,000–$65,000/yr",
+    commitmentCount: 7,
+    hiredDeafBefore: true,
+    tags: ["qa", "software", "tech", "remote"],
+  },
+  {
+    id: "7",
+    title: "Retail Associate",
+    company: "Corner Market Co-op",
+    location: "Astoria, Queens, NY",
+    remote: false,
+    salaryRange: "$17–$19/hr",
+    commitmentCount: 3,
+    hiredDeafBefore: false,
+    tags: ["retail", "customer service", "entry-level"],
+  },
+  {
+    id: "8",
+    title: "Bookkeeper",
+    company: "Sound Shore Accounting",
+    location: "Bridgeport, CT",
+    remote: true,
+    salaryRange: "$50,000–$58,000/yr",
+    commitmentCount: 4,
+    hiredDeafBefore: false,
+    tags: ["accounting", "finance", "remote", "admin"],
+  },
+  {
+    id: "9",
+    title: "Patternmaker",
+    company: "Garment District Studio",
+    location: "Manhattan, NY",
+    remote: false,
+    salaryRange: "$26–$32/hr",
+    commitmentCount: 6,
+    hiredDeafBefore: true,
+    tags: ["fashion", "patternmaking", "sewing", "creative"],
+  },
+  {
+    id: "10",
+    title: "IT Support Technician",
+    company: "Garden State Health Network",
+    location: "Jersey City, NJ",
+    remote: false,
+    salaryRange: "$48,000–$56,000/yr",
+    commitmentCount: 5,
+    hiredDeafBefore: false,
+    tags: ["it", "tech support", "healthcare"],
+  },
+];
