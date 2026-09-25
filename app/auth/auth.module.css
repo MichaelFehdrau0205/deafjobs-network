@@ -230,3 +230,27 @@
   text-underline-offset: 3px;
   cursor: pointer;
 }
+
+/* ---------- "New here? Start here." ---------- */
+.whoNote {
+  margin: 0 0 1.25rem;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.whoNote strong {
+  font-weight: 800;
+}
+/* a link inside a sentence, not a stand-alone button */
+.textLink {
+  display: inline;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}

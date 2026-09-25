@@ -15,6 +15,19 @@ const COPY: Record<Role, { heading: string }> = {
   employer: { heading: "Sign in to hire." },
 };
 
+// The box opens for someone coming back. A newcomer taps "Start here" to
+// switch the same box to a welcome view; both use the same sign-in methods.
+const NEW_COPY: Record<Role, { heading: string; note: string }> = {
+  candidate: {
+    heading: "Welcome. Let\u2019s get started.",
+    note: "After you sign in, we\u2019ll help you build your profile.",
+  },
+  employer: {
+    heading: "Welcome. Let\u2019s get you hiring.",
+    note: "After you sign in, we\u2019ll start with the four commitment questions.",
+  },
+};
+
 type Method = "Email" | "Apple" | "Google";
 const METHODS: Method[] = ["Email", "Apple", "Google"];
 
@@ -23,8 +36,9 @@ type Props = {
   open: boolean;
   // Fired when the dialog closes by itself (Esc or the Close button).
   onClose: () => void;
-  // Fired once a 6-digit code has been entered.
-  onVerified: () => void;
+  // Fired once a 6-digit code has been entered. `returning` is true when a
+  // candidate said they have been here before (they skip the profile builder).
+  onVerified: (returning: boolean) => void;
 };
 
 // The dialog is drawn into <body>, not inside the nav it was opened from, so
@@ -51,12 +65,14 @@ export function AuthDialog({ role, open, onClose, onVerified }: Props) {
   );
 }
 
-function AuthFlow({ role, onVerified }: { role: Role; onVerified: () => void }) {
+function AuthFlow({ role, onVerified }: { role: Role; onVerified: (returning: boolean) => void }) {
   const [step, setStep] = useState<"choose" | "verify">("choose");
   const [method, setMethod] = useState<Method>("Email");
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [resent, setResent] = useState(false);
+  // Coming back (the default) or new here? Decides where they land.
+  const [isNew, setIsNew] = useState(false);
 
   const firstOptionRef = useRef<HTMLButtonElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
@@ -96,7 +112,7 @@ function AuthFlow({ role, onVerified }: { role: Role; onVerified: () => void }) 
       codeRef.current?.focus();
       return;
     }
-    onVerified(); // demo: any 6 digits are accepted
+    onVerified(!isNew); // demo: any 6 digits are accepted
   }
 
   function resend() {
@@ -110,7 +126,7 @@ function AuthFlow({ role, onVerified }: { role: Role; onVerified: () => void }) 
     <div className={styles.body}>
       <div className={styles.head}>
         <h2 id="auth-title" className={styles.title}>
-          {step === "choose" ? COPY[role].heading : "Enter your code."}
+          {step === "choose" ? (isNew ? NEW_COPY[role].heading : COPY[role].heading) : "Enter your code."}
         </h2>
         <button
           type="button"
@@ -135,6 +151,14 @@ function AuthFlow({ role, onVerified }: { role: Role; onVerified: () => void }) 
       </div>
 
       {step === "choose" ? (
+        <div>
+          <p className={styles.whoNote}>
+            {/* One button whose words change, so keyboard focus stays on it. */}
+            <span aria-live="polite">{isNew ? NEW_COPY[role].note : <>New to <strong>DEAFJOBS</strong>?</>}</span>{" "}
+            <button type="button" className={styles.textLink} onClick={() => setIsNew((v) => !v)}>
+              {isNew ? "Been here before? Sign in." : "Start here."}
+            </button>
+          </p>
         <div className={styles.options}>
           {METHODS.map((m, i) => (
             <button
@@ -147,6 +171,7 @@ function AuthFlow({ role, onVerified }: { role: Role; onVerified: () => void }) 
               Continue with {m}
             </button>
           ))}
+        </div>
         </div>
       ) : (
         <form onSubmit={submit} noValidate>

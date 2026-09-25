@@ -5,10 +5,12 @@ import { useRef, useState } from "react";
 import { AuthDialog } from "./auth-dialog";
 import { signIn, signOut, useSignedInRole, type Role } from "./auth-store";
 
-// Where each kind of person lands after signing in.
-const DESTINATION: Record<Role, string> = {
-  candidate: "/applications",
-  employer: "/employer",
+// Where each kind of person lands after signing in: a newcomer starts the
+// setup (profile, or the four commitment questions), and someone coming back
+// goes straight to their applications or applicants.
+const DESTINATION: Record<Role, { new: string; returning: string }> = {
+  candidate: { new: "/profile/new", returning: "/applications" },
+  employer: { new: "/employer/commitment", returning: "/employer/applicants" },
 };
 
 // The SIGN IN link in one of the two nav rows. It is a button, because it
@@ -32,11 +34,11 @@ export function SignInLink({ role }: { role: Role }) {
     leavingRef.current = false;
   }
 
-  function handleVerified() {
+  function handleVerified(returning: boolean) {
     leavingRef.current = true;
     signIn(role);
     setOpen(false);
-    router.push(DESTINATION[role]);
+    router.push(DESTINATION[role][returning ? "returning" : "new"]);
   }
 
   function handleSignOut() {

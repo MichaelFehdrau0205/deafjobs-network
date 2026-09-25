@@ -8,6 +8,10 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* No rubber-band bounce past the top or bottom of the page. Without this
+     the browser shows its default white behind the page, a flash of white
+     above the landing page's green. */
+  overscroll-behavior: none;
 }
 
 body {
