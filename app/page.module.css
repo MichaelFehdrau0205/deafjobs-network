@@ -309,6 +309,15 @@
 .sentence {
   white-space: nowrap;
 }
+/* Phones: "Post a role. Answer four questions." is its own left-aligned line,
+   so the justified paragraph above doesn't stretch the last line to reach it. */
+@media (max-width: 479px) {
+  .closing {
+    display: block;
+    margin-top: 0.4em;
+    text-align: left;
+  }
+}
 
 /* ---------- footnote ---------- */
 /* Last child of the blue half (a flex column): margin-top:auto pushes it to

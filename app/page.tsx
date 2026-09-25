@@ -164,10 +164,15 @@ export default function Home() {
             your posting. The support is a few minutes, not a full-time condition. And you
             won&rsquo;t figure it out alone. They&rsquo;ve done this more times than
             you have. Then the training ends, and you just have a Deaf employee.{" "}
-            {/* Each closing sentence is unbreakable (white-space: nowrap), so a
-                line can end between them but never inside one. */}
-            <strong className={styles.sentence}>Post a role.</strong>{" "}
-            <strong className={styles.sentence}>Answer four questions.</strong>
+            {/* The two closing sentences sit together in one span. On phones it
+                becomes its own left-aligned line, so the justified paragraph
+                above it doesn't stretch a line to fit them. Each closing
+                sentence is unbreakable (white-space: nowrap), so a line can end
+                between them but never inside one. */}
+            <span className={styles.closing}>
+              <strong className={styles.sentence}>Post a role.</strong>{" "}
+              <strong className={styles.sentence}>Answer four questions.</strong>
+            </span>
           </p>
 
           <nav aria-label="Employer navigation">
