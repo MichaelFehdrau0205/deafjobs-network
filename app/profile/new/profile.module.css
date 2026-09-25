@@ -914,3 +914,232 @@
     animation: none;
   }
 }
+
+/* ---------- work-location chips (basics step) ---------- */
+.chipInputRow {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+.chipInputRow .input {
+  flex: 1;
+}
+.chipAddButton {
+  flex: none;
+  min-height: 48px;
+  padding: 0 1.1rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--blue);
+  background: #fff;
+  border: 2px solid var(--blue);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.chipAddButton:hover {
+  background: var(--blue);
+  color: #fff;
+}
+.chipAddButton:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.4rem 0.4rem 0.85rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+}
+.chipRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.chipRemove:hover {
+  color: #fff;
+  background: var(--error);
+}
+.chipRemove:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* ---------- work-preferences summary (review page) ---------- */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.15rem 1rem;
+  margin: 0.5rem 0 0;
+}
+.summaryGrid dt {
+  margin-top: 0.65rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.summaryGrid dd {
+  margin: 0.1rem 0 0;
+  font-size: 1rem;
+  color: var(--ink);
+}
+@media (min-width: 640px) {
+  .summaryGrid {
+    grid-template-columns: max-content 1fr;
+    align-items: baseline;
+    column-gap: 1.25rem;
+  }
+  .summaryGrid dt {
+    margin-top: 0.5rem;
+  }
+  .summaryGrid dd {
+    margin-top: 0.5rem;
+  }
+}
+
+/* ---------- experience/education entry cards (resume step) ---------- */
+.entryCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.1rem;
+  margin: 0 0 0.85rem;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+.entryCardBody {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.entryCardTitle {
+  margin: 0 0 0.2rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.entryCardDesc {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+.entryCardActions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: none;
+  flex-wrap: wrap;
+}
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.iconButton:hover:not(:disabled) {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.iconButton:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.iconButton:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+.entryForm {
+  padding: 1rem 1.1rem 1.25rem;
+  margin: 0 0 0.85rem;
+  background: var(--page);
+  border: 2px solid var(--blue);
+  border-radius: 8px;
+}
+.entryFormGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.85rem;
+}
+@media (min-width: 560px) {
+  .entryFormGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- salary row (basics step) ---------- */
+.salaryRow {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.salaryRow .input {
+  flex: 1 1 160px;
+  min-width: 120px;
+}
+.segmented {
+  display: flex;
+  flex: none;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.segBtn {
+  min-height: 48px;
+  padding: 0 1rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+  border: 0;
+  border-left: 2px solid var(--line);
+  cursor: pointer;
+}
+.segBtn:first-child {
+  border-left: 0;
+}
+.segBtn:hover {
+  background: var(--page);
+}
+.segBtnActive,
+.segBtnActive:hover {
+  color: #fff;
+  background: var(--blue);
+}
+.segBtn:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: -3px;
+}

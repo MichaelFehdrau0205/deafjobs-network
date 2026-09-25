@@ -6,11 +6,23 @@ import { createContext, useContext, useState } from "react";
 // localStorage. It lives in the /profile/new layout, which stays mounted as the
 // candidate moves between steps, so Back/Next keep what they typed.
 
+export type CommuteRange = "" | "local" | "15" | "30" | "50" | "anywhere";
+
+export type CommPreference = "" | "deaf" | "hard-of-hearing" | "asl" | "english" | "both";
+
+export type SalaryType = "" | "hourly" | "yearly";
+
 export type Basics = {
   displayName: string;
-  location: string;
+  homeAddress: string;
   openToRemote: boolean;
   headline: string;
+  workLocations: string[];
+  commuteRange: CommuteRange;
+  roleInterest: string;
+  commPreference: CommPreference;
+  salaryType: SalaryType;
+  salaryAmount: string;
 };
 
 // How the candidate talks in the video decides the caption path in step 3:
@@ -43,11 +55,59 @@ export type Resume = {
   fileName: string;
 };
 
+// Structured entries shown alongside the raw resume text, LinkedIn/Indeed
+// style: candidates can add, edit, remove, and reorder these independent of
+// whether they've uploaded a file.
+export type ExperienceEntry = {
+  id: string;
+  title: string;
+  company: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+  description: string;
+};
+
+export type EducationEntry = {
+  id: string;
+  school: string;
+  degree: string;
+  field: string;
+  startYear: string;
+  endYear: string;
+};
+
+function newId() {
+  return Math.random().toString(36).slice(2, 10);
+}
+
+export function moveItem<T>(list: T[], index: number, direction: -1 | 1): T[] {
+  const target = index + direction;
+  if (target < 0 || target >= list.length) return list;
+  const next = list.slice();
+  [next[index], next[target]] = [next[target], next[index]];
+  return next;
+}
+
+export function emptyExperience(): ExperienceEntry {
+  return { id: newId(), title: "", company: "", startDate: "", endDate: "", current: false, description: "" };
+}
+
+export function emptyEducation(): EducationEntry {
+  return { id: newId(), school: "", degree: "", field: "", startYear: "", endYear: "" };
+}
+
 const EMPTY: Basics = {
   displayName: "",
-  location: "",
+  homeAddress: "",
   openToRemote: false,
   headline: "",
+  workLocations: [],
+  commuteRange: "",
+  roleInterest: "",
+  commPreference: "",
+  salaryType: "",
+  salaryAmount: "",
 };
 
 const NO_CAPTIONS: Captions = { cues: [], confirmed: false, forMode: null };
@@ -61,6 +121,10 @@ type ProfileDraft = {
   saveCaptions: (captions: Captions) => void;
   resume: Resume | null;
   saveResume: (resume: Resume | null) => void;
+  experience: ExperienceEntry[];
+  saveExperience: (entries: ExperienceEntry[]) => void;
+  education: EducationEntry[];
+  saveEducation: (entries: EducationEntry[]) => void;
 };
 
 const ProfileContext = createContext<ProfileDraft | null>(null);
@@ -70,6 +134,8 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [video, setVideo] = useState<Video | null>(null);
   const [captions, saveCaptions] = useState<Captions>(NO_CAPTIONS);
   const [resume, saveResume] = useState<Resume | null>(null);
+  const [experience, saveExperience] = useState<ExperienceEntry[]>([]);
+  const [education, saveEducation] = useState<EducationEntry[]>([]);
 
   function saveVideo(next: Video | null) {
     // A new or removed video means the old captions no longer match it.
@@ -93,6 +159,10 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         saveCaptions,
         resume,
         saveResume,
+        experience,
+        saveExperience,
+        education,
+        saveEducation,
       }}
     >
       {children}
@@ -130,3 +200,19 @@ export function activeCueIndex(cues: Cue[], t: number) {
   });
   return found;
 }
+
+export const COMMUTE_LABELS: Record<Exclude<CommuteRange, "">, string> = {
+  local: "Same city or town only",
+  "15": "Up to 15 miles",
+  "30": "Up to 30 miles",
+  "50": "Up to 50 miles",
+  anywhere: "I'll travel however far it takes",
+};
+
+export const COMM_PREFERENCE_LABELS: Record<Exclude<CommPreference, "">, string> = {
+  deaf: "Deaf",
+  "hard-of-hearing": "Hard of hearing",
+  asl: "ASL preferred",
+  english: "English preferred",
+  both: "Both ASL and English",
+};
