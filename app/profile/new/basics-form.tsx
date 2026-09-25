@@ -16,7 +16,7 @@ import {
 } from "./profile-context";
 import styles from "./profile.module.css";
 
-type FieldName = "displayName" | "street" | "city" | "state" | "zip" | "headline" | "commPreference";
+type FieldName = "displayName" | "street" | "city" | "state" | "zip" | "headline" | "commPreferences";
 type Errors = Partial<Record<FieldName, string>>;
 
 // Plain-language messages: say what to do, with an example where it helps.
@@ -27,7 +27,7 @@ const MESSAGES: Record<FieldName, string> = {
   state: "Choose your state.",
   zip: "Enter your 5-digit ZIP code, like 11201.",
   headline: "Write one short line about the work you do or want to do.",
-  commPreference: "Choose the option that best describes how you communicate.",
+  commPreferences: "Choose at least one option that describes how you communicate.",
 };
 
 // Order matches the order on the page, so the summary reads top to bottom.
@@ -38,11 +38,11 @@ const FIELD_ORDER: FieldName[] = [
   "state",
   "zip",
   "headline",
-  "commPreference",
+  "commPreferences",
 ];
 
 const COMMUTE_OPTIONS: Exclude<CommuteRange, "">[] = ["local", "15", "30", "50", "anywhere"];
-const COMM_PREFERENCE_OPTIONS: Exclude<CommPreference, "">[] = [
+const COMM_PREFERENCE_OPTIONS: CommPreference[] = [
   "deaf",
   "hard-of-hearing",
   "asl",
@@ -58,7 +58,7 @@ function validate(v: Basics): Errors {
   if (!v.state) errors.state = MESSAGES.state;
   if (!/^\d{5}(-\d{4})?$/.test(v.zip.trim())) errors.zip = MESSAGES.zip;
   if (!v.headline.trim()) errors.headline = MESSAGES.headline;
-  if (!v.commPreference) errors.commPreference = MESSAGES.commPreference;
+  if (v.commPreferences.length === 0) errors.commPreferences = MESSAGES.commPreferences;
   return errors;
 }
 
@@ -124,8 +124,8 @@ export function BasicsForm() {
   }
 
   function focusField(name: FieldName) {
-    if (name === "commPreference") {
-      document.getElementById(`commPreference-${values.commPreference || COMM_PREFERENCE_OPTIONS[0]}`)?.focus();
+    if (name === "commPreferences") {
+      document.getElementById(`commPreference-${values.commPreferences[0] ?? COMM_PREFERENCE_OPTIONS[0]}`)?.focus();
       return;
     }
     document.getElementById(name)?.focus();
@@ -439,29 +439,36 @@ export function BasicsForm() {
         <fieldset className={styles.fieldset}>
           <legend className={styles.label}>How do you communicate?</legend>
           <p className={styles.hint} id="commPreference-hint">
-            This helps employers know how to set up your interview and the job itself.
+            Pick all that apply. This helps employers know how to set up your interview and the job itself.
           </p>
           {COMM_PREFERENCE_OPTIONS.map((opt) => (
             <label className={styles.radio} htmlFor={`commPreference-${opt}`} key={opt}>
               <input
                 id={`commPreference-${opt}`}
-                type="radio"
+                type="checkbox"
                 name="commPreference"
-                checked={values.commPreference === opt}
+                checked={values.commPreferences.includes(opt)}
                 aria-describedby="commPreference-hint"
-                onChange={() => update({ ...values, commPreference: opt })}
+                onChange={(e) =>
+                  update({
+                    ...values,
+                    commPreferences: e.target.checked
+                      ? [...values.commPreferences, opt]
+                      : values.commPreferences.filter((c) => c !== opt),
+                  })
+                }
               />
               <span>{COMM_PREFERENCE_LABELS[opt]}</span>
             </label>
           ))}
-          {errors.commPreference && (
+          {errors.commPreferences && (
             <p className={styles.error}>
               <span className={styles.errorIcon} aria-hidden="true">
                 !
               </span>
               <span>
                 <span className={styles.srOnly}>Error: </span>
-                {errors.commPreference}
+                {errors.commPreferences}
               </span>
             </p>
           )}

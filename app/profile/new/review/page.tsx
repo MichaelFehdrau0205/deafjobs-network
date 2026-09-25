@@ -118,10 +118,10 @@ export default function ReviewPage() {
               <dd>{basics.roleInterest}</dd>
             </>
           )}
-          {basics.commPreference && (
+          {basics.commPreferences.length > 0 && (
             <>
               <dt>Communication</dt>
-              <dd>{COMM_PREFERENCE_LABELS[basics.commPreference]}</dd>
+              <dd>{basics.commPreferences.map((c) => COMM_PREFERENCE_LABELS[c]).join(", ")}</dd>
             </>
           )}
           {basics.salaryType && basics.salaryAmount && (

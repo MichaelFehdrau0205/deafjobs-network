@@ -9,7 +9,8 @@ import { setVideoLater } from "./video-later-store";
 
 export type CommuteRange = "" | "local" | "15" | "30" | "50" | "anywhere";
 
-export type CommPreference = "" | "deaf" | "hard-of-hearing" | "asl" | "english" | "both";
+// How someone communicates. They can pick more than one (Deaf and ASL preferred, say).
+export type CommPreference = "deaf" | "hard-of-hearing" | "asl" | "english" | "both";
 
 export type SalaryType = "" | "hourly" | "yearly";
 
@@ -30,7 +31,7 @@ export type Basics = {
   workLocations: string[];
   commuteRange: CommuteRange;
   roleInterest: string;
-  commPreference: CommPreference;
+  commPreferences: CommPreference[];
   salaryType: SalaryType;
   salaryAmount: string;
 };
@@ -122,7 +123,7 @@ const EMPTY: Basics = {
   workLocations: [],
   commuteRange: "",
   roleInterest: "",
-  commPreference: "",
+  commPreferences: [],
   salaryType: "",
   salaryAmount: "",
 };
@@ -227,7 +228,7 @@ export const COMMUTE_LABELS: Record<Exclude<CommuteRange, "">, string> = {
   anywhere: "I'll travel however far it takes",
 };
 
-export const COMM_PREFERENCE_LABELS: Record<Exclude<CommPreference, "">, string> = {
+export const COMM_PREFERENCE_LABELS: Record<CommPreference, string> = {
   deaf: "Deaf",
   "hard-of-hearing": "Hard of Hearing",
   asl: "ASL preferred",
