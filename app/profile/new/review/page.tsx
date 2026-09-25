@@ -24,6 +24,17 @@ export default function ReviewPage() {
           {basics.displayName || "Your name"}
         </h2>
         {basics.homeAddress && <p className={styles.hint}>{basics.homeAddress}</p>}
+        {basics.vrsPhone && <p className={styles.hint}>VRS: {basics.vrsPhone}</p>}
+        {basics.textOrCallPhone && (
+          <p className={styles.hint}>
+            {basics.phoneContactType === "call"
+              ? "Call"
+              : basics.phoneContactType === "text"
+              ? "Text"
+              : "Text/call"}
+            : {basics.textOrCallPhone}
+          </p>
+        )}
         {basics.headline && <p className={styles.intro} style={{ margin: "0.5rem 0 0" }}>{basics.headline}</p>}
 
         {video ? (

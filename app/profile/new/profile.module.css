@@ -3,7 +3,7 @@
   --blue: #1400e6;
   --ink: #14142e; /* body text, still 15.6:1 on this page background */
   --muted: #4b4b6b; /* hints, 7.7:1 on this page background */
-  --line: #5a5a80; /* field borders, 6.4:1 on this page background (needs 3:1) */
+  --line: #3a3a44; /* field borders: dark charcoal, still meets 3:1 on this page background */
   --error: #b00020; /* 7.1:1 on this page background */
   --page: #f0f0f5; /* the page itself: soft grey, so white boxes read as boxes */
 
@@ -1146,4 +1146,34 @@
 .segBtn:focus-visible {
   outline: 3px solid var(--blue);
   outline-offset: -3px;
+}
+.inputSuffix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-height: 40px;
+  padding: 0 1rem;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--page);
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* ---------- phone numbers (basics step) ---------- */
+.phoneField {
+  margin: 0 0 1.1rem;
+}
+.phoneField:last-child {
+  margin-bottom: 0;
+}
+.phoneLabel {
+  display: block;
+  margin: 0 0 0.2rem;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
 }

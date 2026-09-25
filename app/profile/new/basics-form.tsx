@@ -177,6 +177,72 @@ export function BasicsForm() {
           onChange={(homeAddress) => update({ ...values, homeAddress })}
         />
 
+        <div className={styles.field}>
+          <span className={styles.label}>Phone numbers</span>
+          <p className={styles.hint}>
+            Optional. Let employers know how to actually reach you by phone.
+          </p>
+
+          <div>
+            <div className={styles.phoneField}>
+              <label className={styles.phoneLabel} htmlFor="vrsPhone">
+                Video Relay Service (VRS) number
+              </label>
+              <p className={styles.hint}>For calls placed through an ASL interpreter.</p>
+              <div className={styles.salaryRow}>
+                <input
+                  id="vrsPhone"
+                  name="vrsPhone"
+                  type="tel"
+                  className={styles.input}
+                  maxLength={20}
+                  value={values.vrsPhone}
+                  onChange={(e) => update({ ...values, vrsPhone: e.target.value })}
+                />
+                <span className={styles.inputSuffix}>VRS</span>
+              </div>
+            </div>
+
+            <div className={styles.phoneField}>
+              <label className={styles.phoneLabel} htmlFor="textOrCallPhone">
+                Text or voice call number
+              </label>
+              <p className={styles.hint}>
+                For hard of hearing candidates, or if you&rsquo;d rather take a direct call or text.
+              </p>
+              <div className={styles.salaryRow}>
+                <input
+                  id="textOrCallPhone"
+                  name="textOrCallPhone"
+                  type="tel"
+                  className={styles.input}
+                  maxLength={20}
+                  value={values.textOrCallPhone}
+                  onChange={(e) => update({ ...values, textOrCallPhone: e.target.value })}
+                />
+                <div className={styles.segmented} role="group" aria-label="Text or call">
+                  {(["text", "call"] as Exclude<typeof values.phoneContactType, "">[]).map((opt) => (
+                    <button
+                      key={opt}
+                      type="button"
+                      className={`${styles.segBtn} ${values.phoneContactType === opt ? styles.segBtnActive : ""}`}
+                      aria-pressed={values.phoneContactType === opt}
+                      onClick={() =>
+                        update({
+                          ...values,
+                          phoneContactType: values.phoneContactType === opt ? "" : opt,
+                        })
+                      }
+                    >
+                      {opt === "text" ? "Text" : "Call"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <TextField
           id="roleInterest"
           label="What roles are you interested in?"

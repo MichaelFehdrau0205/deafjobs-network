@@ -12,9 +12,14 @@ export type CommPreference = "" | "deaf" | "hard-of-hearing" | "asl" | "english"
 
 export type SalaryType = "" | "hourly" | "yearly";
 
+export type PhoneContactType = "" | "text" | "call";
+
 export type Basics = {
   displayName: string;
   homeAddress: string;
+  vrsPhone: string; // Video Relay Service number: calls placed through an ASL interpreter
+  textOrCallPhone: string; // direct text or voice call number (e.g. for hard of hearing candidates)
+  phoneContactType: PhoneContactType; // whether that direct number takes texts or voice calls
   openToRemote: boolean;
   headline: string;
   workLocations: string[];
@@ -100,6 +105,9 @@ export function emptyEducation(): EducationEntry {
 const EMPTY: Basics = {
   displayName: "",
   homeAddress: "",
+  vrsPhone: "",
+  textOrCallPhone: "",
+  phoneContactType: "",
   openToRemote: false,
   headline: "",
   workLocations: [],

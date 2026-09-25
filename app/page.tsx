@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CommitmentPreviewLink } from "./commitment-preview";
 import { SignInLink } from "./auth/sign-in-link";
 import styles from "./page.module.css";
 
@@ -171,12 +172,10 @@ export default function Home() {
           <nav aria-label="Employer navigation">
             <ul className={styles.links}>
               <li>
-                <a href="#">Post a role</a>
+                <Link href="/employer">Post a role</Link>
               </li>
               <li>
-                <a href="#">
-                  <span className={styles.full}>The </span>commitment
-                </a>
+                <CommitmentPreviewLink />
               </li>
               <li>
                 <a href="#">
