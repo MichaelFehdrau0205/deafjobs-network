@@ -8,6 +8,7 @@
   --page: #f0f0f5; /* the page itself: soft grey, so white boxes read as boxes */
 
   min-height: 100vh;
+  font-weight: 400; /* regular by default; only titles, labels and links are bold */
   background: var(--page);
   color: var(--ink);
 }
@@ -461,6 +462,8 @@
 .prompts {
   margin: 0;
   padding-left: 1.2rem;
+  font-size: 14px;
+  font-weight: 400;
   line-height: 1.6;
 }
 .prompts li {
@@ -1038,12 +1041,13 @@
 }
 .summaryGrid dt {
   margin-top: 0.65rem;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 13px;
   color: var(--muted);
 }
 .summaryGrid dd {
   margin: 0.1rem 0 0;
+  font-weight: 400;
   font-size: 14px;
   color: var(--ink);
 }
