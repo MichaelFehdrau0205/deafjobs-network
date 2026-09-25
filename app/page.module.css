@@ -69,6 +69,8 @@
   color: var(--green);
   justify-content: flex-start;
   padding-top: var(--markgap);
+  /* the footnote sits about 5px above the bottom edge */
+  padding-bottom: 5px;
   /* The blue half overlaps the green one by --overlap and paints on top of
      it (later in the DOM, both positioned). The seam is then a single
      painted edge inside the green half's last pixel instead of two edges
