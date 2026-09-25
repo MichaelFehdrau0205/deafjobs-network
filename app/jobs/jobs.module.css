@@ -110,8 +110,20 @@
   border: 2px solid var(--line);
   border-radius: 10px;
 }
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  border-radius: 8px;
+}
 .cardMain {
-  flex: 1 1 280px;
+  flex: 1 1 260px;
   min-width: 0;
 }
 .cardTitle {
@@ -121,16 +133,35 @@
   color: var(--ink);
 }
 .cardCompany {
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.15rem;
   font-size: 14px;
   color: var(--muted);
 }
-.cardMeta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 0.9rem;
+.cardLocation {
+  margin: 0 0 0.5rem;
   font-size: 13px;
   color: var(--muted);
+}
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--page);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.tagCheck {
+  color: #00693e;
+  background: #e3f9ee;
 }
 .cardSide {
   display: flex;

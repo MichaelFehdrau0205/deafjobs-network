@@ -13,6 +13,27 @@ function stateOf(location: string): string | null {
   return null;
 }
 
+// A wider spread of flat tones cycled by company name so each logo tile
+// reads distinctly, standing in for each company's own brand color.
+const LOGO_COLORS = [
+  "#1400e6", // blue
+  "#00895c", // green
+  "#b5540a", // orange
+  "#7a1fb0", // purple
+  "#0a6fb0", // sky
+  "#c21858", // pink/red
+  "#8a7000", // olive
+  "#0f766e", // teal
+  "#a8331f", // rust
+  "#455a9c", // slate blue
+];
+
+function logoColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return LOGO_COLORS[hash % LOGO_COLORS.length];
+}
+
 export function JobsBrowser() {
   const [query, setQuery] = useState("");
   const [state, setState] = useState<string>("");
@@ -63,13 +84,24 @@ export function JobsBrowser() {
         <ul className={styles.list}>
           {filtered.map((job) => (
             <li className={styles.card} key={job.id}>
+              <div
+                className={styles.logo}
+                style={{ background: logoColor(job.company) }}
+                aria-hidden="true"
+              >
+                {job.company.charAt(0)}
+              </div>
               <div className={styles.cardMain}>
                 <p className={styles.cardTitle}>{job.title}</p>
                 <p className={styles.cardCompany}>{job.company}</p>
-                <div className={styles.cardMeta}>
-                  <span>{job.location}</span>
-                  {job.remote && <span>Remote-friendly</span>}
-                  {job.hiredDeafBefore && <span>Has hired Deaf employees before</span>}
+                <p className={styles.cardLocation}>{job.location}</p>
+                <div className={styles.tagRow}>
+                  {job.remote && <span className={styles.tag}>Remote-friendly</span>}
+                  {job.hiredDeafBefore && (
+                    <span className={`${styles.tag} ${styles.tagCheck}`}>
+                      <span aria-hidden="true">✓</span> Has hired Deaf employees before
+                    </span>
+                  )}
                 </div>
               </div>
               <div className={styles.cardSide}>
