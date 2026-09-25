@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { trapTab } from "../../auth/trap-tab";
 import {
@@ -39,6 +39,15 @@ export function MessageDialog({
   onClose: () => void;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  // Opens the dialog once, when it is added to the page. This has to be a
+  // stable function: an inline one runs again on every re-render, and sending
+  // a message re-renders this component, which would re-open the box right
+  // after it closed.
+  const openOnce = useCallback((el: HTMLDialogElement | null) => {
+    dialogRef.current = el;
+    if (el && !el.open) el.showModal();
+  }, []);
   const firstName = app.candidateName.split(" ")[0];
   const formatText = joinPhrases(
     formats.length > 0
@@ -65,15 +74,12 @@ export function MessageDialog({
     e.preventDefault();
     if (!text.trim()) return;
     sendMessage(app.id, "employer", text.trim(), template.sets);
-    document.querySelector<HTMLDialogElement>("dialog[data-message-dialog]")?.close();
+    dialogRef.current?.close();
   }
 
   return createPortal(
     <dialog
-      ref={(el) => {
-        if (el && !el.open) el.showModal();
-      }}
-      data-message-dialog
+      ref={openOnce}
       className={styles.dialog}
       aria-labelledby="message-title"
       onKeyDown={trapTab}
