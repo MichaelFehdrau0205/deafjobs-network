@@ -128,8 +128,8 @@
 }
 .cardTitle {
   margin: 0 0 0.2rem;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--ink);
 }
 .cardCompany {
