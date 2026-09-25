@@ -1,0 +1,105 @@
+/* Shared light-page shell for the standalone content pages (How it works,
+   Resources, Applications): the landing page's green half in miniature as a
+   header, then a light reading page. Same language as jobs.module.css. */
+.shell {
+  --green: #00e87a;
+  --blue: #1400e6;
+  --ink: #0b0b1a;
+  --muted: #55536b;
+  --line: #cfcee0;
+  --page: #f0f0f5;
+
+  min-height: 100vh;
+  background: var(--page);
+  color: var(--ink);
+}
+.skip {
+  position: absolute;
+  left: -9999px;
+  background: #000;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  z-index: 99;
+  font-weight: 700;
+  text-decoration: none;
+}
+.skip:focus {
+  left: 1rem;
+  top: 1rem;
+}
+.header {
+  padding: 1.1rem clamp(1.25rem, 5vw, 3rem);
+  background: var(--green);
+}
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  max-width: 60rem;
+  margin: 0 auto;
+}
+.brand {
+  font-weight: 900;
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
+  color: var(--blue);
+  text-decoration: none;
+}
+.brand:focus-visible,
+.nav a:focus-visible,
+.nav button:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav a,
+.nav button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: none;
+  border: 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav a:hover,
+.nav button:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3rem) clamp(1.25rem, 5vw, 3rem) 4rem;
+}
+.title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  font-weight: 800;
+  color: var(--blue);
+  line-height: 1.1;
+}
+.intro {
+  margin: 0 0 2rem;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 42rem;
+}

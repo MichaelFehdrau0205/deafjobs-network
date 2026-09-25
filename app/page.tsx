@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CommitmentPreviewLink } from "./commitment-preview";
+import { CostsLink } from "./costs-dialog";
 import { SignInLink } from "./auth/sign-in-link";
 import styles from "./page.module.css";
 
@@ -112,7 +113,7 @@ export default function Home() {
                 </Link>
               </li>
               <li>
-                <a href="#">How it works</a>
+                <Link href="/how-it-works?for=candidates">How it works</Link>
               </li>
               <li>
                 <Link href="/profile/new">
@@ -120,7 +121,7 @@ export default function Home() {
                 </Link>
               </li>
               <li>
-                <a href="#">Resources</a>
+                <Link href="/resources">Resources</Link>
               </li>
               <li>
                 <SignInLink role="candidate" />
@@ -178,12 +179,10 @@ export default function Home() {
                 <CommitmentPreviewLink />
               </li>
               <li>
-                <a href="#">
-                  <span className={styles.full}>What it </span>costs
-                </a>
+                <CostsLink />
               </li>
               <li>
-                <a href="#">How it works</a>
+                <Link href="/how-it-works?for=employers">How it works</Link>
               </li>
               <li>
                 <SignInLink role="employer" />

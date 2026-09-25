@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import { setVideoLater } from "./video-later-store";
 
 // Client-side only, on purpose: nothing here touches a server, a database or
 // localStorage. It lives in the /profile/new layout, which stays mounted as the
@@ -153,6 +154,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     } else if (video && next && video.mode !== next.mode) {
       saveCaptions(NO_CAPTIONS);
     }
+    if (next) setVideoLater(false); // they added one: no reminder needed
     setVideo(next);
   }
 

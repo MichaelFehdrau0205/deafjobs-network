@@ -1,0 +1,159 @@
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0 0 2rem;
+}
+.jump a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1400e6;
+  text-underline-offset: 3px;
+}
+.jump a:focus-visible,
+.external:focus-visible,
+.footNote a:focus-visible {
+  outline: 3px solid #1400e6;
+  outline-offset: 3px;
+}
+
+.section {
+  margin: 0 0 2.75rem;
+  scroll-margin-top: 1rem;
+}
+.heading {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.9rem;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 999px;
+}
+.green {
+  color: #1400e6;
+  background: #00e87a;
+}
+.blue {
+  color: #00e87a;
+  background: #1400e6;
+}
+.sectionIntro {
+  margin: 0 0 1rem;
+  font-size: 14px;
+  color: #55536b;
+  line-height: 1.55;
+  max-width: 42rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem 1.15rem;
+  background: #fff;
+  border: 2px solid #cfcee0;
+  border-radius: 10px;
+}
+.cardTitle {
+  margin: 0 0 0.35rem;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0b0b1a;
+}
+.cardText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #55536b;
+}
+.external {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1400e6;
+  text-underline-offset: 3px;
+}
+
+.costList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.costItem {
+  padding: 1rem 1.15rem;
+  background: #fff;
+  border: 2px solid #cfcee0;
+  border-radius: 10px;
+}
+.costHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.15rem 1rem;
+  margin-bottom: 0.3rem;
+}
+.costName {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0b0b1a;
+}
+.costValue {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #1400e6;
+}
+.footNote {
+  margin: 1rem 0 0;
+  font-size: 12px;
+  color: #55536b;
+}
+.footNote a {
+  color: #1400e6;
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.costs {
+  margin-top: 2rem;
+  scroll-margin-top: 1rem;
+}
+.subheading {
+  margin: 0 0 0.5rem;
+  font-size: 18px;
+  font-weight: 800;
+  color: #1400e6;
+}

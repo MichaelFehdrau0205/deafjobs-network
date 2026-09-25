@@ -7,7 +7,7 @@ import { signIn, signOut, useSignedInRole, type Role } from "./auth-store";
 
 // Where each kind of person lands after signing in.
 const DESTINATION: Record<Role, string> = {
-  candidate: "/profile/new",
+  candidate: "/applications",
   employer: "/employer",
 };
 

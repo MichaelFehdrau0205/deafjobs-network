@@ -1,0 +1,251 @@
+.back {
+  margin: -1rem 0 1.5rem;
+  font-size: 13px;
+}
+.back a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 700;
+  color: #1400e6;
+  text-underline-offset: 3px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  padding: 1rem 1.15rem;
+  background: #fff;
+  border: 2px solid #cfcee0;
+  border-radius: 10px;
+}
+.rowTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0b0b1a;
+}
+.meta {
+  margin: 0.15rem 0 0;
+  font-size: 13px;
+  color: #55536b;
+}
+.rowActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  margin-top: 0.6rem;
+}
+.detail {
+  margin-top: 0.5rem;
+  padding-top: 0.6rem;
+  border-top: 2px solid #f0f0f5;
+}
+.detail[hidden] {
+  display: none;
+}
+.detailNote {
+  margin: 0 0 0.5rem;
+  font-size: 13px;
+  color: #55536b;
+}
+
+.primary {
+  min-height: 44px;
+  padding: 0 1.2rem;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1400e6;
+  background: #00e87a;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.primary:disabled {
+  color: #55536b;
+  background: #e2e1ec;
+  cursor: not-allowed;
+}
+.secondary,
+.linkAction {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1400e6;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.primary:focus-visible,
+.secondary:focus-visible,
+.linkAction:focus-visible,
+.back a:focus-visible,
+.closeButton:focus-visible {
+  outline: 3px solid #1400e6;
+  outline-offset: 3px;
+}
+
+/* ---------- message dialog ---------- */
+.dialog {
+  margin: auto;
+  width: min(36rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  overflow: auto;
+  color: #0b0b1a;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+.dialog::backdrop {
+  background: rgba(20, 20, 46, 0.7);
+}
+.body {
+  padding: clamp(1.25rem, 5vw, 2rem);
+}
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+.dialogTitle {
+  margin: 0;
+  font-size: clamp(1.3rem, 5vw, 1.6rem);
+  font-weight: 800;
+  color: #1400e6;
+  line-height: 1.2;
+}
+.dialogSub {
+  margin: 0 0 1.1rem;
+  font-size: 13px;
+  color: #55536b;
+  line-height: 1.5;
+}
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin: -0.25rem -0.25rem 0 0;
+  color: #1400e6;
+  background: transparent;
+  border: 2px solid #cfcee0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.closeButton:hover {
+  color: #fff;
+  background: #1400e6;
+  border-color: #1400e6;
+}
+.threadWrap {
+  margin-bottom: 1.1rem;
+  max-height: 12rem;
+  overflow: auto;
+}
+.templates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.legend {
+  display: block;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.template {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  border: 2px solid #cfcee0;
+  border-radius: 8px;
+}
+.template input {
+  margin-top: 0.25rem;
+  accent-color: #1400e6;
+}
+.template:focus-within {
+  outline: 3px solid #1400e6;
+  outline-offset: 2px;
+}
+.templateOn {
+  border-color: #1400e6;
+  background: #f4f3ff;
+}
+.templateLabel {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+}
+.templateHint {
+  display: block;
+  font-size: 12px;
+  color: #55536b;
+}
+.textarea {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #0b0b1a;
+  background: #fff;
+  border: 2px solid #cfcee0;
+  border-radius: 6px;
+  resize: vertical;
+}
+.textarea:focus-visible {
+  outline: 3px solid #1400e6;
+  outline-offset: 2px;
+  border-color: #1400e6;
+}
+.effect {
+  margin: 0.6rem 0 0;
+  font-size: 12px;
+  color: #55536b;
+}
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 2px solid #f0f0f5;
+}

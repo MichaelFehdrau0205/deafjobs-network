@@ -21,6 +21,9 @@ export default function EmployerLayout({ children }: { children: React.ReactNode
               <Link href="/employer">Dashboard</Link>
             </li>
             <li>
+              <Link href="/employer/applicants">Applicants</Link>
+            </li>
+            <li>
               <SignOutButton />
             </li>
           </ul>

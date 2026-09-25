@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { FocusHeading } from "../focus-heading";
 import { Progress } from "../progress";
 import { speakTime, useProfileDraft, type VideoMode } from "../profile-context";
+import { setVideoLater } from "../video-later-store";
+import { VideoHelpDialog } from "./video-help-dialog";
 import styles from "../profile.module.css";
 
 const MAX_SECONDS = 120; // 2 minutes, for recording and for uploads
@@ -292,8 +294,8 @@ export function VideoStep() {
       <FocusHeading className={styles.title}>Add a short video</FocusHeading>
       <p className={styles.intro}>
         A video lets employers meet you before they read your resume. Sign or
-        speak, whichever is natural for you. Up to 2 minutes. You can
-        also skip this for now.
+        speak, whichever is natural for you. Up to 2 minutes. Your profile
+        needs a video to be finished.
       </p>
 
       <p className={styles.srOnly} role="status" aria-live="polite">
@@ -386,6 +388,12 @@ export function VideoStep() {
 
       {/* ---------- choose ---------- */}
       {!video && phase === "choose" && (
+        <div className={styles.titleRow}>
+          <h2 className={styles.sectionTitle}>Record or upload</h2>
+          <VideoHelpDialog />
+        </div>
+      )}
+      {!video && phase === "choose" && (
         <div className={styles.choices}>
           <button type="button" className={styles.button} onClick={openCamera}>
             Record a video
@@ -410,15 +418,19 @@ export function VideoStep() {
       )}
 
       {/* Always a real, visible link, right under the record button. Leaving
-          turns the camera off (see the cleanup effect above). */}
+          turns the camera off (see the cleanup effect above). It saves the
+          profile as it is and reminds them on their applications page. */}
       {!video && (
         <p className={styles.skipRow}>
-          {/* Past captions too: with no video there is nothing to caption. */}
-          <Link className={styles.linkAction} href="/profile/new/review">
-            Skip for now
+          <Link
+            className={styles.linkAction}
+            href="/profile/new/review"
+            onClick={() => setVideoLater(true)}
+          >
+            I can&rsquo;t record a video right now
           </Link>
           <span className={styles.hint}>
-            You can add a video later. Your captions step is skipped too.
+            No problem. We&rsquo;ll save your profile and remind you to add one when you can.
           </span>
         </p>
       )}

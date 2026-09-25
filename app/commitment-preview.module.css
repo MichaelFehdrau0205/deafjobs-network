@@ -143,8 +143,9 @@
   font: inherit;
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
-  background: var(--blue);
+  color: var(--blue);
+  background: #00e87a;
+  border: 0;
   border-radius: 8px;
   text-decoration: none;
 }
@@ -174,4 +175,48 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* ---------- "What it costs" modal (costs-dialog.tsx) ---------- */
+.costList {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--page);
+}
+.costRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.15rem 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 2px solid var(--page);
+}
+.costName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.costValue {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue);
+}
+.costIncluded {
+  margin: 0;
+  padding: 0.2rem 0.55rem;
+  font-size: 11px;
+  font-weight: 800;
+  color: #00693e;
+  background: #e3f9ee;
+  border-radius: 999px;
+}
+.costNote {
+  margin: 0 0 1.25rem;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.55;
 }

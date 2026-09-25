@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FocusHeading } from "../focus-heading";
+import { useVideoLater } from "../video-later-store";
 import { useProfileDraft, formatTime, COMMUTE_LABELS, COMM_PREFERENCE_LABELS } from "../profile-context";
 import styles from "../profile.module.css";
 
@@ -10,6 +11,7 @@ import styles from "../profile.module.css";
 // out of scope for this build (see DEAFJOBS-DEMO-STARTER.md).
 export default function ReviewPage() {
   const { basics, video, captions, resume, experience, education } = useProfileDraft();
+  const videoLater = useVideoLater();
 
   return (
     <>
@@ -69,9 +71,21 @@ export default function ReviewPage() {
             )}
           </div>
         ) : (
-          <p className={styles.hint} style={{ marginTop: "1rem" }}>
-            No video added.
-          </p>
+          <div style={{ marginTop: "1rem" }} role="status">
+            <p className={styles.sectionTitle}>
+              {videoLater ? "Your profile is saved without a video" : "Your profile needs a video"}
+            </p>
+            <p className={styles.hint}>
+              {videoLater
+                ? "That's okay. We'll remind you on your applications page. Employers respond most to profiles with a video."
+                : "A video is required to finish your profile."}
+            </p>
+            <p style={{ margin: "0.5rem 0 0" }}>
+              <Link className={styles.linkAction} href="/profile/new/video">
+                Add your video
+              </Link>
+            </p>
+          </div>
         )}
       </section>
 

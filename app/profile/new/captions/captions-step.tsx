@@ -374,7 +374,7 @@ export function CaptionsStep() {
                 <h2 id="add-title" className={styles.sectionTitle}>
                   Add a caption line
                 </h2>
-                <HelpDialog />
+                <HelpDialog signed={signed} />
               </div>
               <label className={styles.label} htmlFor="caption-line">
                 Caption line

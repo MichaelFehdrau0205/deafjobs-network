@@ -19,7 +19,8 @@
 
 .header {
   padding: 1.1rem clamp(1.25rem, 5vw, 3rem);
-  background: var(--green);
+  /* the employer half of the landing page: blue with green text */
+  background: var(--blue);
 }
 .headerInner {
   display: flex;
@@ -34,8 +35,15 @@
   font-weight: 900;
   font-size: 1.4rem;
   letter-spacing: -0.01em;
-  color: var(--blue);
+  color: var(--green);
   text-decoration: none;
+}
+.brand:focus-visible,
+.nav a:focus-visible,
+.nav button:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 .nav {
   display: flex;
@@ -54,7 +62,7 @@
   font: inherit;
   font-size: 14px;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--green);
   background: none;
   border: 0;
   text-decoration: none;
@@ -201,8 +209,9 @@
   font: inherit;
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
-  background: var(--blue);
+  /* green with blue text (white on this green is too faint to read) */
+  color: var(--blue);
+  background: var(--green);
   border: 0;
   border-radius: 8px;
   text-decoration: none;

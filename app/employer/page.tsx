@@ -29,6 +29,10 @@ export default function EmployerDashboardPage() {
         Sign the commitment once, then post roles that carry it automatically.
       </p>
 
+      <p className={styles.captionNote}>
+        <Link href="/employer/applicants">View applicants and send messages</Link>
+      </p>
+
       {!signed ? (
         <div className={styles.card}>
           <p className={styles.cardTitle}>Complete the commitment to start posting.</p>

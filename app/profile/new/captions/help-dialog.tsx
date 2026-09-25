@@ -50,7 +50,7 @@ function StepIcon({ name }: { name: keyof typeof ICONS }) {
 // showModal() makes the page behind inert, Esc closes it, and it announces
 // itself as a dialog. Focus wrapping and focus return are done by hand below
 // so they don't depend on how a given browser treats them.
-export function HelpDialog() {
+export function HelpDialog({ signed = true }: { signed?: boolean }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -77,7 +77,7 @@ export function HelpDialog() {
         ref={triggerRef}
         type="button"
         className={styles.helpButton}
-        aria-label="How to add captions"
+        aria-label={signed ? "How to add captions" : "How to check your captions"}
         aria-haspopup="dialog"
         onClick={() => dialogRef.current?.showModal()}
       >
@@ -111,10 +111,11 @@ export function HelpDialog() {
         onClose={() => triggerRef.current?.focus()}
       >
         <h2 id="help-title" className={styles.dialogTitle}>
-          How to add captions
+          {signed ? "How to add captions" : "How to check your captions"}
         </h2>
         {/* role="list": list-style is off (the numbers come from CSS), and
             some screen readers drop list semantics when it is. */}
+        {signed ? (
         <ol id="help-steps" role="list" className={styles.dialogSteps}>
           <li>
             <StepIcon name="play" />
@@ -144,6 +145,39 @@ export function HelpDialog() {
             </span>
           </li>
         </ol>
+        ) : (
+        <ol id="help-steps" role="list" className={styles.dialogSteps}>
+          <li>
+            <StepIcon name="play" />
+            <span className={styles.stepText}>
+              We made a draft from your voice. Click Play from start.
+            </span>
+          </li>
+          <li>
+            <StepIcon name="check" />
+            <span className={styles.stepText}>Read each line as it appears.</span>
+          </li>
+          <li>
+            <StepIcon name="type" />
+            <span className={styles.stepText}>
+              A word is wrong? Click Edit on that line and fix it.
+            </span>
+          </li>
+          <li>
+            <StepIcon name="plus" />
+            <span className={styles.stepText}>
+              A line is missing? Pause the video, type it, and click Add line.
+            </span>
+          </li>
+          <li>
+            <StepIcon name="check" />
+            <span className={styles.stepText}>
+              When every line says what you said, check &ldquo;These captions are
+              accurate&rdquo; to continue.
+            </span>
+          </li>
+        </ol>
+        )}
         <button
           type="button"
           className={styles.button}
