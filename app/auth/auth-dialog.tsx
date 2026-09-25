@@ -73,16 +73,50 @@ function AuthFlow({ role, onVerified }: { role: Role; onVerified: (returning: bo
   const [resent, setResent] = useState(false);
   // Coming back (the default) or new here? Decides where they land.
   const [isNew, setIsNew] = useState(false);
+  // The create-account form (new people only).
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [signupError, setSignupError] = useState<{ field: "email" | "password"; text: string } | null>(null);
 
   const firstOptionRef = useRef<HTMLButtonElement>(null);
+  const startRef = useRef<HTMLButtonElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
+  const toggledRef = useRef(false);
 
-  // Focus follows the step: the first option to start, the code box once the
-  // code screen shows (the button that was pressed is gone by then).
+  // Focus follows the view: the email box on the create-account form, the
+  // code box once the code screen shows, "Start here" when they come back to
+  // the sign-in view, and the first option when the box first opens.
   useEffect(() => {
     if (step === "verify") codeRef.current?.focus();
+    else if (isNew) emailRef.current?.focus();
+    else if (toggledRef.current) startRef.current?.focus();
     else firstOptionRef.current?.focus();
-  }, [step]);
+  }, [step, isNew]);
+
+  function switchView(next: boolean) {
+    toggledRef.current = true;
+    setSignupError(null);
+    setIsNew(next);
+  }
+
+  // Demo: any email that looks like one, and any password of 8+ characters.
+  // Nothing is sent or stored.
+  function createAccount(e: React.FormEvent) {
+    e.preventDefault();
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      setSignupError({ field: "email", text: "Enter your email, like name@example.com." });
+      emailRef.current?.focus();
+      return;
+    }
+    if (password.length < 8) {
+      setSignupError({ field: "password", text: "Your password needs at least 8 characters." });
+      passwordRef.current?.focus();
+      return;
+    }
+    onVerified(false); // a newcomer starts with setup
+  }
 
   function choose(m: Method) {
     setMethod(m);
@@ -151,28 +185,104 @@ function AuthFlow({ role, onVerified }: { role: Role; onVerified: (returning: bo
       </div>
 
       {step === "choose" ? (
-        <div>
-          <p className={styles.whoNote}>
-            {/* One button whose words change, so keyboard focus stays on it. */}
-            <span aria-live="polite">{isNew ? NEW_COPY[role].note : <>New to <strong>DEAFJOBS</strong>?</>}</span>{" "}
-            <button type="button" className={styles.textLink} onClick={() => setIsNew((v) => !v)}>
-              {isNew ? "Been here before? Sign in." : "Start here."}
+        isNew ? (
+          <form onSubmit={createAccount} noValidate>
+            <p className={styles.whoNote}>{NEW_COPY[role].note}</p>
+
+            <label className={styles.label} htmlFor="signup-email">
+              Email
+            </label>
+            <input
+              ref={emailRef}
+              id="signup-email"
+              type="email"
+              autoComplete="email"
+              className={styles.textInput}
+              value={email}
+              aria-invalid={signupError?.field === "email" ? true : undefined}
+              aria-describedby={signupError?.field === "email" ? "signup-error" : undefined}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setSignupError(null);
+              }}
+            />
+
+            <label className={styles.label} htmlFor="signup-password">
+              Create a password
+            </label>
+            <input
+              ref={passwordRef}
+              id="signup-password"
+              type="password"
+              autoComplete="new-password"
+              className={styles.textInput}
+              value={password}
+              aria-invalid={signupError?.field === "password" ? true : undefined}
+              aria-describedby={
+                signupError?.field === "password" ? "signup-hint signup-error" : "signup-hint"
+              }
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setSignupError(null);
+              }}
+            />
+            <p id="signup-hint" className={styles.fieldHint}>
+              At least 8 characters.
+            </p>
+
+            {signupError && (
+              <p id="signup-error" className={styles.error} role="alert">
+                <span className={styles.errorIcon} aria-hidden="true">
+                  !
+                </span>
+                <span>
+                  <span className={styles.srOnly}>Error: </span>
+                  {signupError.text}
+                </span>
+              </p>
+            )}
+
+            <button type="submit" className={`${styles.option} ${styles.verify}`}>
+              Create account
             </button>
-          </p>
-        <div className={styles.options}>
-          {METHODS.map((m, i) => (
-            <button
-              key={m}
-              ref={i === 0 ? firstOptionRef : undefined}
-              type="button"
-              className={styles.option}
-              onClick={() => choose(m)}
-            >
-              Continue with {m}
-            </button>
-          ))}
-        </div>
-        </div>
+            <p className={styles.demoNote}>
+              Demo only. Nothing is saved, so please don&rsquo;t use a real password.
+            </p>
+
+            <div className={styles.linkRow}>
+              <button type="button" className={styles.linkButton} onClick={() => switchView(false)}>
+                Already have an account? Sign in
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div>
+            <p className={styles.whoNote}>
+              New to <strong>DEAFJOBS</strong>?{" "}
+              <button
+                ref={startRef}
+                type="button"
+                className={styles.textLink}
+                onClick={() => switchView(true)}
+              >
+                Start here.
+              </button>
+            </p>
+            <div className={styles.options}>
+              {METHODS.map((m, i) => (
+                <button
+                  key={m}
+                  ref={i === 0 ? firstOptionRef : undefined}
+                  type="button"
+                  className={styles.option}
+                  onClick={() => choose(m)}
+                >
+                  Continue with {m}
+                </button>
+              ))}
+            </div>
+          </div>
+        )
       ) : (
         <form onSubmit={submit} noValidate>
           <p id="code-hint" className={styles.hint}>

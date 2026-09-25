@@ -44,14 +44,14 @@ export type Application = {
 
 // The demo signs you in as this candidate on the candidate side, and as this
 // employer on the employer side. The two views share the records.
-export const DEMO_CANDIDATE = "Michael F.";
+export const DEMO_CANDIDATE = "Jordan Rivera";
 export const DEMO_EMPLOYER = "Northbridge Logistics";
 
 const SEED: Application[] = [
   {
     id: "a1",
     candidateName: DEMO_CANDIDATE,
-    candidateHeadline: "Deaf builder · frontend & design",
+    candidateHeadline: "Graphic designer, 3 years",
     jobTitle: "Warehouse Associate",
     company: DEMO_EMPLOYER,
     appliedAt: "2026-09-24T14:10:00Z",
@@ -61,7 +61,7 @@ const SEED: Application[] = [
   {
     id: "a2",
     candidateName: DEMO_CANDIDATE,
-    candidateHeadline: "Deaf builder · frontend & design",
+    candidateHeadline: "Graphic designer, 3 years",
     jobTitle: "Front Desk Coordinator",
     company: "Harbor View Dental",
     appliedAt: "2026-09-22T16:30:00Z",
@@ -71,7 +71,7 @@ const SEED: Application[] = [
   {
     id: "a3",
     candidateName: DEMO_CANDIDATE,
-    candidateHeadline: "Deaf builder · frontend & design",
+    candidateHeadline: "Graphic designer, 3 years",
     jobTitle: "Data Entry Specialist",
     company: "Meridian Insurance Group",
     appliedAt: "2026-09-20T13:05:00Z",
@@ -88,7 +88,7 @@ const SEED: Application[] = [
   {
     id: "a4",
     candidateName: DEMO_CANDIDATE,
-    candidateHeadline: "Deaf builder · frontend & design",
+    candidateHeadline: "Graphic designer, 3 years",
     jobTitle: "Graphic Designer",
     company: "Palette & Co.",
     appliedAt: "2026-09-18T11:00:00Z",
@@ -105,7 +105,7 @@ const SEED: Application[] = [
   {
     id: "a5",
     candidateName: DEMO_CANDIDATE,
-    candidateHeadline: "Deaf builder · frontend & design",
+    candidateHeadline: "Graphic designer, 3 years",
     jobTitle: "Seamstress",
     company: "Hudson & Vine Alterations",
     appliedAt: "2026-09-12T10:15:00Z",
@@ -122,7 +122,7 @@ const SEED: Application[] = [
   // Other people who applied to the demo employer's Warehouse Associate role.
   {
     id: "e1",
-    candidateName: "Priya N.",
+    candidateName: "Priya Nair",
     candidateHeadline: "Warehouse team lead, 6 years",
     jobTitle: "Warehouse Associate",
     company: DEMO_EMPLOYER,
@@ -132,7 +132,7 @@ const SEED: Application[] = [
   },
   {
     id: "e2",
-    candidateName: "Marcus T.",
+    candidateName: "Marcus Thompson",
     candidateHeadline: "Front desk & scheduling",
     jobTitle: "Warehouse Associate",
     company: DEMO_EMPLOYER,
@@ -142,7 +142,7 @@ const SEED: Application[] = [
   },
   {
     id: "e3",
-    candidateName: "Elena R.",
+    candidateName: "Elena Rodriguez",
     candidateHeadline: "QA tester, mobile & web",
     jobTitle: "Inventory Clerk",
     company: DEMO_EMPLOYER,
@@ -165,7 +165,7 @@ const SEED: Application[] = [
   },
 ];
 
-const KEY = "deafjobs-applications-v3";
+const KEY = "deafjobs-applications-v5";
 const listeners = new Set<() => void>();
 
 // getSnapshot must return the same object until something changes, so the

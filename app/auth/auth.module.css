@@ -254,3 +254,40 @@
   text-underline-offset: 3px;
   cursor: pointer;
 }
+
+/* ---------- create-account form (new people) ---------- */
+.textInput {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0b0b1a;
+  background: #fff;
+  border: 2px solid var(--fg);
+  border-radius: 8px;
+}
+.textInput:focus-visible {
+  outline: 3px solid var(--fg);
+  outline-offset: 3px;
+}
+.textInput[aria-invalid="true"] {
+  border-color: var(--error);
+}
+.fieldHint {
+  margin: -0.5rem 0 0.9rem;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* the "demo only" line under Create account */
+.demoNote {
+  margin: 0.9rem 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}

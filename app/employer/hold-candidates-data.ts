@@ -14,21 +14,21 @@ export type HoldCandidate = {
 export const HOLD_CANDIDATES: HoldCandidate[] = [
   {
     id: "1",
-    name: "Priya N.",
+    name: "Priya Nair",
     headline: "Warehouse team lead, 6 years",
     consideringFor: "Fulfillment Team Lead",
     note: "Strong interview, no opening at the time.",
   },
   {
     id: "2",
-    name: "Marcus T.",
+    name: "Marcus Thompson",
     headline: "Front-desk & scheduling",
     consideringFor: "Front Desk Coordinator",
     note: "Asked to be considered when a second shift opens up.",
   },
   {
     id: "3",
-    name: "Elena R.",
+    name: "Elena Rodriguez",
     headline: "QA tester, mobile & web",
     consideringFor: "Quality Assurance Tester",
     note: "Great technical round — keep in mind for next hiring cycle.",
