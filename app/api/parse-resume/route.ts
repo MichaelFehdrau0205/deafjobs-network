@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
-import { PDFParse } from "pdf-parse";
+// Pinned to 1.x on purpose: 2.x pulls in an optional native "canvas"
+// binding (for rendering pages as images) that isn't needed for text
+// extraction and fails to load on some machines, crashing every upload.
+// 1.x reads text only and has no native dependency.
+//
+// Imported from its inner lib file, not the package root: 1.x's own
+// index.js has a leftover debug harness that runs when `module.parent`
+// is undefined (as it is under Next's bundler) and tries to read a test
+// PDF that doesn't exist in this project, crashing the import itself.
+import pdf from "pdf-parse/lib/pdf-parse.js";
 import mammoth from "mammoth";
 
 // Real text extraction, not a mock: pdf-parse and mammoth both read the
@@ -36,13 +45,8 @@ export async function POST(req: Request) {
     let text = "";
 
     if (name.endsWith(".pdf") || file.type === "application/pdf") {
-      const parser = new PDFParse({ data: buffer });
-      try {
-        const result = await parser.getText();
-        text = result.text;
-      } finally {
-        await parser.destroy();
-      }
+      const result = await pdf(buffer);
+      text = result.text;
     } else if (
       name.endsWith(".docx") ||
       file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"

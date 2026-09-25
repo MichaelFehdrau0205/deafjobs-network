@@ -26,12 +26,18 @@ export function ResumeStep() {
   const fileRef = useRef<HTMLInputElement>(null);
   const problemRef = useRef<HTMLDivElement>(null);
   const textHeadingRef = useRef<HTMLHeadingElement>(null);
+  // Guards against a slow, earlier upload finishing after a later one and
+  // overwriting its result — e.g. retry-after-failure, or the dev server
+  // restarting mid-request. Only the most recent upload is allowed to
+  // touch state; anything older is dropped when it resolves.
+  const requestIdRef = useRef(0);
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = ""; // let them pick the same file again
     if (!file) return;
 
+    const requestId = ++requestIdRef.current;
     setProblem(null);
     setEmptyError(false);
 
@@ -47,6 +53,8 @@ export function ResumeStep() {
       body.append("file", file);
       const res = await fetch("/api/parse-resume", { method: "POST", body });
       const data = await res.json();
+      if (requestId !== requestIdRef.current) return; // a newer upload already won
+
       if (!res.ok) {
         setProblem(data.error || "That file couldn't be read. Try a different one.");
         setStatus("error");
@@ -59,6 +67,7 @@ export function ResumeStep() {
       setStatus("idle");
       requestAnimationFrame(() => textHeadingRef.current?.focus());
     } catch {
+      if (requestId !== requestIdRef.current) return; // a newer upload already won
       setProblem("That upload didn't go through. Check your connection and try again.");
       setStatus("error");
       requestAnimationFrame(() => problemRef.current?.focus());

@@ -160,7 +160,7 @@ export default function Home() {
             Not prejudice. Just not knowing how it would work. Cap&shy;tion&shy;ing comes with
             your posting. The support is a few minutes, not a full-time condition. And you
             won&rsquo;t figure it out alone. They&rsquo;ve done this more times than
-            you have. Then the training ends, and you just have an employee.{" "}
+            you have. Then the training ends, and you just have a Deaf employee.{" "}
             {/* Each closing sentence is unbreakable (white-space: nowrap), so a
                 line can end between them but never inside one. */}
             <strong className={styles.sentence}>Post a role.</strong>{" "}
