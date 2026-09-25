@@ -15,7 +15,7 @@ type Status = "idle" | "reading" | "error";
 
 export function ResumeStep() {
   const router = useRouter();
-  const { resume, saveResume } = useProfileDraft();
+  const { video, resume, saveResume } = useProfileDraft();
 
   const [status, setStatus] = useState<Status>("idle");
   const [problem, setProblem] = useState<string | null>(null);
@@ -176,7 +176,11 @@ export function ResumeStep() {
           <button type="submit" className={styles.button}>
             Next: review
           </button>
-          <Link className={styles.linkAction} href="/profile/new/captions">
+          {/* No video means the captions step was skipped, so go back past it. */}
+          <Link
+            className={styles.linkAction}
+            href={video ? "/profile/new/captions" : "/profile/new/video"}
+          >
             Back
           </Link>
         </div>

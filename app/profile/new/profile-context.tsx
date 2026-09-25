@@ -38,6 +38,11 @@ export type Captions = {
   forMode: VideoMode | null; // which path the cues were made for
 };
 
+export type Resume = {
+  text: string;
+  fileName: string;
+};
+
 const EMPTY: Basics = {
   displayName: "",
   location: "",
@@ -54,6 +59,8 @@ type ProfileDraft = {
   saveVideo: (video: Video | null) => void;
   captions: Captions;
   saveCaptions: (captions: Captions) => void;
+  resume: Resume | null;
+  saveResume: (resume: Resume | null) => void;
 };
 
 const ProfileContext = createContext<ProfileDraft | null>(null);
@@ -62,6 +69,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [basics, saveBasics] = useState<Basics>(EMPTY);
   const [video, setVideo] = useState<Video | null>(null);
   const [captions, saveCaptions] = useState<Captions>(NO_CAPTIONS);
+  const [resume, saveResume] = useState<Resume | null>(null);
 
   function saveVideo(next: Video | null) {
     // A new or removed video means the old captions no longer match it.
@@ -76,7 +84,16 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ProfileContext.Provider
-      value={{ basics, saveBasics, video, saveVideo, captions, saveCaptions }}
+      value={{
+        basics,
+        saveBasics,
+        video,
+        saveVideo,
+        captions,
+        saveCaptions,
+        resume,
+        saveResume,
+      }}
     >
       {children}
     </ProfileContext.Provider>

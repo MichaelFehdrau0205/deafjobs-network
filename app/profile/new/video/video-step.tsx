@@ -5,10 +5,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FocusHeading } from "../focus-heading";
 import { Progress } from "../progress";
-import { formatTime, useProfileDraft, type VideoMode } from "../profile-context";
+import { speakTime, useProfileDraft, type VideoMode } from "../profile-context";
 import styles from "../profile.module.css";
 
-const MAX_SECONDS = 90;
+const MAX_SECONDS = 120; // 2 minutes, for recording and for uploads
+
+// 95 -> "1:35"
+const clock = (secs: number) =>
+  `${Math.floor(secs / 60)}:${String(Math.floor(secs % 60)).padStart(2, "0")}`;
 const MAX_UPLOAD_MB = 200;
 
 type Phase = "choose" | "camera" | "recording";
@@ -41,6 +45,7 @@ export function VideoStep() {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const startedAtRef = useRef(0);
+  const warnedRef = useRef(0); // 0 = none, 1 = "30 left" said, 2 = "10 left" said
   const timerRef = useRef<number | null>(null);
   const problemRef = useRef<HTMLDivElement>(null);
   const modeRef = useRef<HTMLFieldSetElement>(null);
@@ -117,7 +122,9 @@ export function VideoStep() {
         mode: video?.mode ?? null,
       });
       setPhase("choose");
-      setAnnounce(`Recording stopped. Your video is ${Math.round(duration)} seconds long.`);
+      setAnnounce(
+        `Recording stopped${duration >= MAX_SECONDS ? " at the 2 minute limit" : ""}. Your video is ${speakTime(Math.round(duration))} long.`,
+      );
       requestAnimationFrame(() => previewHeadingRef.current?.focus());
     };
     recorderRef.current = recorder;
@@ -126,9 +133,20 @@ export function VideoStep() {
     setElapsed(0);
     setPhase("recording");
     setAnnounce("Recording.");
+    warnedRef.current = 0;
     timerRef.current = window.setInterval(() => {
       const secs = (Date.now() - startedAtRef.current) / 1000;
       setElapsed(secs);
+      // The badge ticks every second, which is far too chatty to read out.
+      // Tell screen reader users only when time is getting short.
+      const left = MAX_SECONDS - secs;
+      if (left <= 10 && warnedRef.current < 2) {
+        warnedRef.current = 2;
+        setAnnounce("10 seconds left.");
+      } else if (left <= 30 && warnedRef.current < 1) {
+        warnedRef.current = 1;
+        setAnnounce("30 seconds left.");
+      }
       if (secs >= MAX_SECONDS) stopRecording();
     }, 250);
   }
@@ -161,6 +179,15 @@ export function VideoStep() {
     const probe = document.createElement("video");
     probe.preload = "metadata";
     probe.onloadedmetadata = () => {
+      // Round first, so a clip that is 2:00.3 long isn't turned away.
+      const length = Math.round(probe.duration);
+      if (Number.isFinite(length) && length > MAX_SECONDS) {
+        URL.revokeObjectURL(url);
+        setProblem(
+          `That video is ${speakTime(length)} long. The limit is 2 minutes. Trim it to 2 minutes or shorter, then upload it again.`,
+        );
+        return;
+      }
       saveVideo({
         url,
         fileName: file.name,
@@ -207,10 +234,9 @@ export function VideoStep() {
       <Progress current={2} />
       <FocusHeading className={styles.title}>Add a short video</FocusHeading>
       <p className={styles.intro}>
-        A video is required. It lets employers meet you before they read your
-        resume, and lets a hiring manager decide from something real instead of a
-        guess. Sign or speak, whichever is natural for you. Up to {MAX_SECONDS}{" "}
-        seconds.
+        A video lets employers meet you before they read your resume. Sign or
+        speak, whichever is natural for you. Up to 2 minutes. You can
+        also skip this for now.
       </p>
 
       <p className={styles.srOnly} role="status" aria-live="polite">
@@ -255,8 +281,7 @@ export function VideoStep() {
             {phase === "recording" && (
               <p className={styles.recBadge}>
                 <span className={styles.recDot} aria-hidden="true" />
-                Recording {formatTime(elapsed).replace(/\.\d$/, "")} /{" "}
-                {Math.floor(MAX_SECONDS / 60)}:{String(MAX_SECONDS % 60).padStart(2, "0")}
+                Recording {clock(elapsed)} · {clock(Math.max(0, Math.ceil(MAX_SECONDS - elapsed)))} left
               </p>
             )}
           </div>
@@ -311,6 +336,19 @@ export function VideoStep() {
             onChange={onFile}
           />
         </div>
+      )}
+
+      {/* Always a real, visible link, right under the record button. Leaving
+          turns the camera off (see the cleanup effect above). */}
+      {!video && (
+        <p className={styles.skipRow}>
+          <Link className={styles.linkAction} href="/profile/new/resume">
+            Skip for now
+          </Link>
+          <span className={styles.hint}>
+            You can add a video later. Your captions step is skipped too.
+          </span>
+        </p>
       )}
 
       {/* ---------- preview ---------- */}
