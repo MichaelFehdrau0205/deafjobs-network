@@ -15,13 +15,12 @@ type Status = "idle" | "reading" | "error";
 
 export function ResumeStep() {
   const router = useRouter();
-  const { video, resume, saveResume } = useProfileDraft();
+  const { resume, saveResume } = useProfileDraft();
 
   const [status, setStatus] = useState<Status>("idle");
   const [problem, setProblem] = useState<string | null>(null);
   const [text, setText] = useState(resume?.text ?? "");
   const [fileName, setFileName] = useState(resume?.fileName ?? "");
-  const [emptyError, setEmptyError] = useState(false);
 
   const fileRef = useRef<HTMLInputElement>(null);
   const problemRef = useRef<HTMLDivElement>(null);
@@ -39,7 +38,6 @@ export function ResumeStep() {
 
     const requestId = ++requestIdRef.current;
     setProblem(null);
-    setEmptyError(false);
 
     if (file.size > MAX_MB * 1024 * 1024) {
       setProblem(`That file is bigger than ${MAX_MB} MB. Try a smaller file.`);
@@ -78,29 +76,27 @@ export function ResumeStep() {
     saveResume(null);
     setText("");
     setFileName("");
-    setEmptyError(false);
   }
 
   function onTextChange(next: string) {
     setText(next);
     if (fileName) saveResume({ text: next, fileName });
-    if (next.trim()) setEmptyError(false);
   }
+
+  // A resume counts once a file has been uploaded and its text read out. If
+  // they later clear all the text, it stops counting.
+  const ready = fileName !== "" && text.trim() !== "";
 
   function onContinue(e: React.FormEvent) {
     e.preventDefault();
-    if (!text.trim()) {
-      setEmptyError(true);
-      requestAnimationFrame(() => problemRef.current?.focus());
-      return;
-    }
+    if (!ready) return; // the hint beside the button already says why
     saveResume({ text: text.trim(), fileName: fileName || "Resume" });
-    router.push("/profile/new/review");
+    router.push("/profile/new/video");
   }
 
   return (
     <>
-      <Progress current={4} />
+      <Progress current={2} />
       <FocusHeading className={styles.title}>Add your resume</FocusHeading>
       <p className={styles.intro}>
         Upload a PDF or Word file and we&rsquo;ll pull out the text for you to check.
@@ -108,16 +104,10 @@ export function ResumeStep() {
         before you continue.
       </p>
 
-      {(problem || emptyError) && (
+      {problem && (
         <div ref={problemRef} tabIndex={-1} className={styles.summary} role="alert">
-          <p className={styles.summaryTitle}>
-            {emptyError ? "1 thing needs fixing" : "That didn’t work"}
-          </p>
-          <p className={styles.summaryText}>
-            {emptyError
-              ? "Add your resume text, or upload a file, before continuing."
-              : problem}
-          </p>
+          <p className={styles.summaryTitle}>That didn&rsquo;t work</p>
+          <p className={styles.summaryText}>{problem}</p>
         </div>
       )}
 
@@ -173,14 +163,25 @@ export function ResumeStep() {
 
       <form onSubmit={onContinue}>
         <div className={styles.actions}>
-          <button type="submit" className={styles.button}>
-            Next: review
-          </button>
-          {/* No video means the captions step was skipped, so go back past it. */}
-          <Link
-            className={styles.linkAction}
-            href={video ? "/profile/new/captions" : "/profile/new/video"}
+          {/* aria-disabled, not disabled: the button stays reachable by keyboard
+              and screen reader, which hear the hint below via aria-describedby.
+              Pressing it does nothing until a resume is uploaded. */}
+          <button
+            type="submit"
+            className={styles.button}
+            aria-disabled={!ready}
+            aria-describedby={ready ? undefined : "next-hint"}
           >
+            Next: video
+          </button>
+          {!ready && (
+            <p id="next-hint" className={styles.hint}>
+              {status === "reading"
+                ? "Reading your file…"
+                : "Upload your resume to continue."}
+            </p>
+          )}
+          <Link className={styles.linkAction} href="/profile/new">
             Back
           </Link>
         </div>

@@ -15,7 +15,24 @@ const clock = (secs: number) =>
   `${Math.floor(secs / 60)}:${String(Math.floor(secs % 60)).padStart(2, "0")}`;
 const MAX_UPLOAD_MB = 200;
 
-type Phase = "choose" | "camera" | "recording";
+// "starting" is the wait between pressing Record and the picture appearing:
+// the browser may be asking for permission, or the camera may be warming up.
+type Phase = "choose" | "starting" | "camera" | "recording";
+
+// What went wrong, and what to do about it, in plain words.
+function cameraProblem(err: unknown) {
+  const name = err instanceof DOMException ? err.name : "";
+  if (name === "NotAllowedError" || name === "SecurityError") {
+    return "Your browser blocked the camera. Click the camera or lock icon in the address bar, choose Allow, then try again. On a Mac, also check System Settings > Privacy & Security > Camera. Or upload a video instead.";
+  }
+  if (name === "NotFoundError") {
+    return "We couldn't find a camera or microphone on this device. Plug one in and try again, or upload a video instead.";
+  }
+  if (name === "NotReadableError" || name === "AbortError") {
+    return "Your camera is busy or isn't responding. Close other apps that use it, like Zoom or FaceTime, then try again. Or upload a video instead.";
+  }
+  return "The camera didn't start. Try again, or upload a video instead.";
+}
 
 // Safari records MP4, Chrome and Firefox record WebM. Ask, don't assume.
 function pickRecorderType() {
@@ -38,6 +55,7 @@ export function VideoStep() {
   const [problem, setProblem] = useState<string | null>(null);
   const [modeError, setModeError] = useState(false);
   const [announce, setAnnounce] = useState("");
+  const [live, setLive] = useState(false); // the camera picture is actually playing
 
   const liveRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -45,6 +63,7 @@ export function VideoStep() {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const startedAtRef = useRef(0);
+  const attemptRef = useRef(0); // which "Record a video" press is the current one
   const warnedRef = useRef(0); // 0 = none, 1 = "30 left" said, 2 = "10 left" said
   const timerRef = useRef<number | null>(null);
   const problemRef = useRef<HTMLDivElement>(null);
@@ -52,8 +71,41 @@ export function VideoStep() {
   const previewHeadingRef = useRef<HTMLHeadingElement>(null);
   const recordButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Turn the camera off whenever we leave this page.
-  useEffect(() => stopCamera, []);
+  // Turn the camera off whenever we leave this page. Bumping the attempt
+  // number also makes a request still waiting on the browser's permission
+  // prompt switch its camera straight back off when it finally answers.
+  useEffect(
+    () => () => {
+      attemptRef.current += 1;
+      stopCamera();
+    },
+    [],
+  );
+
+  // Connect the camera to the picture AFTER the <video> is on the page. Doing
+  // this right after getUserMedia raced with React's render, and lost
+  // sometimes: the element wasn't there yet, so the picture stayed black.
+  useEffect(() => {
+    if (phase !== "camera") return;
+    const el = liveRef.current;
+    const stream = streamRef.current;
+    if (!el || !stream) return;
+    el.srcObject = stream;
+    el.play().catch(() => {}); // if this is blocked, the check below says so
+    recordButtonRef.current?.focus();
+  }, [phase]);
+
+  // A black picture with no explanation looks broken. If the camera is
+  // connected but nothing plays within 5 seconds, say so.
+  useEffect(() => {
+    if (phase !== "camera" || live) return;
+    const t = window.setTimeout(() => {
+      setProblem(
+        "Your camera connected, but no picture is showing yet. Choose Turn camera off, then Record a video to try again.",
+      );
+    }, 5000);
+    return () => window.clearTimeout(t);
+  }, [phase, live]);
 
   useEffect(() => {
     if (problem) problemRef.current?.focus();
@@ -67,37 +119,40 @@ export function VideoStep() {
 
   async function openCamera() {
     setProblem(null);
+    if (!window.isSecureContext) {
+      setProblem(
+        "Your browser only allows the camera on a secure page (https, or localhost). Open the site from its normal address, or upload a video instead.",
+      );
+      return;
+    }
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
       setProblem(
         "This browser can't record video. You can upload a video you already have instead.",
       );
       return;
     }
+    const attempt = ++attemptRef.current;
+    setLive(false);
+    setPhase("starting");
+    setAnnounce("Turning on your camera. If your browser asks, choose Allow.");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
         audio: true,
       });
+      // They cancelled or left while the browser was asking. Don't leave the
+      // camera running with nobody watching.
+      if (attempt !== attemptRef.current) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
       streamRef.current = stream;
-      setPhase("camera");
+      setPhase("camera"); // the effect above connects it once the <video> exists
       setAnnounce("Camera is on. You can see yourself below.");
-      // The <video> mounts on the next render.
-      requestAnimationFrame(() => {
-        if (liveRef.current) {
-          liveRef.current.srcObject = stream;
-          liveRef.current.play().catch(() => {});
-        }
-        recordButtonRef.current?.focus();
-      });
     } catch (err) {
-      const name = err instanceof DOMException ? err.name : "";
-      setProblem(
-        name === "NotAllowedError"
-          ? "The browser didn't get permission to use your camera. Allow camera access in the address bar, then try again. Or upload a video instead."
-          : name === "NotFoundError"
-            ? "We couldn't find a camera on this device. You can upload a video instead."
-            : "The camera didn't start. Close other apps that might be using it and try again, or upload a video instead.",
-      );
+      if (attempt !== attemptRef.current) return;
+      setPhase("choose");
+      setProblem(cameraProblem(err));
     }
   }
 
@@ -157,7 +212,9 @@ export function VideoStep() {
   }
 
   function cancelCamera() {
+    attemptRef.current += 1;
     stopCamera();
+    setLive(false);
     setPhase("choose");
     setAnnounce("Camera turned off.");
   }
@@ -231,7 +288,7 @@ export function VideoStep() {
 
   return (
     <>
-      <Progress current={2} />
+      <Progress current={3} />
       <FocusHeading className={styles.title}>Add a short video</FocusHeading>
       <p className={styles.intro}>
         A video lets employers meet you before they read your resume. Sign or
@@ -275,9 +332,18 @@ export function VideoStep() {
               ref={liveRef}
               className={`${styles.video} ${styles.mirror}`}
               muted
+              autoPlay
               playsInline
               aria-label="Your camera"
+              onPlaying={() => setLive(true)}
             />
+            {/* Visible while connecting; screen readers get the same words
+                from the live region above. */}
+            {!live && (
+              <p className={styles.cameraStatus} aria-hidden="true">
+                Turning on your camera…
+              </p>
+            )}
             {phase === "recording" && (
               <p className={styles.recBadge}>
                 <span className={styles.recDot} aria-hidden="true" />
@@ -286,11 +352,16 @@ export function VideoStep() {
             )}
           </div>
           <p className={styles.hint}>
-            Make sure your hands and face are in the frame. Good light in front of you
-            helps.
+            {phase === "starting"
+              ? "If your browser asks to use your camera, choose Allow."
+              : "Make sure your hands and face are in the frame. Good light in front of you helps."}
           </p>
           <div className={styles.actions}>
-            {phase === "camera" ? (
+            {phase === "starting" ? (
+              <button type="button" className={styles.linkButton} onClick={cancelCamera}>
+                Cancel
+              </button>
+            ) : phase === "camera" ? (
               <button
                 ref={recordButtonRef}
                 type="button"
@@ -342,7 +413,8 @@ export function VideoStep() {
           turns the camera off (see the cleanup effect above). */}
       {!video && (
         <p className={styles.skipRow}>
-          <Link className={styles.linkAction} href="/profile/new/resume">
+          {/* Past captions too: with no video there is nothing to caption. */}
+          <Link className={styles.linkAction} href="/profile/new/review">
             Skip for now
           </Link>
           <span className={styles.hint}>
@@ -438,7 +510,7 @@ export function VideoStep() {
             Next: captions
           </button>
         )}
-        <Link className={styles.linkAction} href="/profile/new">
+        <Link className={styles.linkAction} href="/profile/new/resume">
           Back
         </Link>
       </div>

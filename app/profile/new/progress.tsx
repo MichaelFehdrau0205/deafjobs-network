@@ -1,6 +1,6 @@
 import styles from "./profile.module.css";
 
-const STEPS = ["Basics", "Video", "Captions", "Resume"] as const;
+const STEPS = ["Basics", "Resume", "Video", "Captions"] as const;
 
 // "Step N of 4" is the real indicator (plain text); the bar is a visual echo of
 // it, so nothing depends on colour alone.

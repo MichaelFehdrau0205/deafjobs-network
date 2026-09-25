@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FocusHeading } from "../focus-heading";
 import { Progress } from "../progress";
+import { HelpDialog } from "./help-dialog";
 import {
   activeCueIndex,
   formatTime,
@@ -221,7 +222,7 @@ export function CaptionsStep() {
       confirmed: true,
       forMode: video!.mode,
     });
-    router.push("/profile/new/resume");
+    router.push("/profile/new/review");
   }
 
   const problems: { href: string; text: string }[] = [];
@@ -236,7 +237,7 @@ export function CaptionsStep() {
 
   return (
     <>
-      <Progress current={3} />
+      <Progress current={4} />
       <FocusHeading className={styles.title}>
         {signed ? "Write your captions" : "Check your captions"}
       </FocusHeading>
@@ -369,9 +370,12 @@ export function CaptionsStep() {
           <div className={styles.lines}>
             {/* ---------- add a line ---------- */}
             <section aria-labelledby="add-title">
-              <h2 id="add-title" className={styles.sectionTitle}>
-                Add a caption line
-              </h2>
+              <div className={styles.titleRow}>
+                <h2 id="add-title" className={styles.sectionTitle}>
+                  Add a caption line
+                </h2>
+                <HelpDialog />
+              </div>
               <label className={styles.label} htmlFor="caption-line">
                 Caption line
               </label>

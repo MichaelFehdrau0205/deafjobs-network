@@ -65,7 +65,7 @@ export function BasicsForm() {
       headline: values.headline.trim(),
       openToRemote: values.openToRemote,
     });
-    router.push("/profile/new/video");
+    router.push("/profile/new/resume");
   }
 
   function focusField(name: FieldName) {
