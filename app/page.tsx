@@ -117,7 +117,7 @@ export default function Home() {
               </li>
               <li>
                 <Link href="/profile/new">
-                  <span className={styles.full}>Your </span>profile
+                  <span className={styles.full}>Your </span>Profile
                 </Link>
               </li>
               <li>

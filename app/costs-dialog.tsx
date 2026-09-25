@@ -17,7 +17,7 @@ export function CostsLink() {
   return (
     <>
       <button ref={triggerRef} type="button" aria-haspopup="dialog" onClick={() => setOpen(true)}>
-        <span className={pageStyles.full}>What it </span>costs
+        <span className={pageStyles.full}>What it </span>Costs
       </button>
       {open && (
         <CostsDialog

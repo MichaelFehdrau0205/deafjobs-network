@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { trapTab } from "./auth/trap-tab";
 import styles from "./commitment-preview.module.css";
+import pageStyles from "./page.module.css";
 
 // "The commitment" link on the landing page's employer half opens this
 // instead of navigating away — a hiring manager can read the actual four
@@ -17,7 +18,7 @@ export function CommitmentPreviewLink() {
   return (
     <>
       <button ref={triggerRef} type="button" aria-haspopup="dialog" onClick={() => setOpen(true)}>
-        The commitment
+        <span className={pageStyles.full}>The </span>Commitment
       </button>
       {open && (
         <CommitmentPreviewDialog

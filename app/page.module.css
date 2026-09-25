@@ -190,26 +190,40 @@
     font-size: min(0.95rem, calc(var(--markw) / 41));
   }
 }
-/* below ~480px the one-line squeeze runs out of room even with short
-   labels and small font-rendering rounding at ~10px stops being linear
-   with viewport width (see: two viewports in the "proportional" zone
-   can land on either side of a whole-pixel rounding step). Rather than
-   chase an ever-smaller magic-number divisor, let the row wrap here --
-   nothing before this breakpoint should ever be clipped and invisible
-   to a keyboard user tabbing through it. */
+/* Phones (below ~480px): each nav row stays on ONE line, still in capitals.
+   Capitals are wider, so the links lose their letter-spacing and the 44px
+   minimum width, the row reaches a little into the side margin, and the text
+   is sized from the row's own width so it always fits. The blue row says
+   "Commitment" instead of "The commitment". Height stays 44px, so the links
+   are still easy to tap. */
 @media (max-width: 479px) {
   .links {
-    flex-wrap: wrap;
-    white-space: normal;
-    row-gap: 0.3em;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    justify-content: space-between;
+    letter-spacing: 0;
   }
-  .links a,
-  .links button {
-    white-space: pre-wrap;
+  /* .page in front: the bottom row's own margin rule comes later in the file.
+     The row reaches 0.75rem from the screen edge instead of the full margin. */
+  .page .top .links,
+  .page .bottom .links {
+    margin-inline: calc(0.75rem - var(--pad));
   }
-  .top .links,
+  /* .page in front: the general link rules further down would otherwise win */
+  .page .links a,
+  .page .links button {
+    min-width: 0;
+    padding-inline: 0.1em;
+    white-space: pre;
+  }
+  .page .links li + li::before {
+    padding: 0;
+  }
+  .top .links {
+    font-size: calc((100vw - 1.5rem) / 28);
+  }
   .bottom .links {
-    font-size: clamp(0.68rem, 3.4vw, 0.85rem);
+    font-size: calc((100vw - 1.5rem) / 32);
   }
 }
 .bottom .links {
