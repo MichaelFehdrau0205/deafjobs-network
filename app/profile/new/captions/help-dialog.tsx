@@ -77,7 +77,7 @@ export function HelpDialog({ signed = true }: { signed?: boolean }) {
         ref={triggerRef}
         type="button"
         className={styles.helpButton}
-        aria-label={signed ? "How to add captions" : "How to check your captions"}
+        aria-label="How to add captions"
         aria-haspopup="dialog"
         onClick={() => dialogRef.current?.showModal()}
       >
@@ -111,11 +111,10 @@ export function HelpDialog({ signed = true }: { signed?: boolean }) {
         onClose={() => triggerRef.current?.focus()}
       >
         <h2 id="help-title" className={styles.dialogTitle}>
-          {signed ? "How to add captions" : "How to check your captions"}
+          How to add captions
         </h2>
         {/* role="list": list-style is off (the numbers come from CSS), and
             some screen readers drop list semantics when it is. */}
-        {signed ? (
         <ol id="help-steps" role="list" className={styles.dialogSteps}>
           <li>
             <StepIcon name="play" />
@@ -123,11 +122,15 @@ export function HelpDialog({ signed = true }: { signed?: boolean }) {
           </li>
           <li>
             <StepIcon name="pause" />
-            <span className={styles.stepText}>Pause where a sign starts.</span>
+            <span className={styles.stepText}>
+              {signed ? "Pause where a sign starts." : "Pause where a sentence starts."}
+            </span>
           </li>
           <li>
             <StepIcon name="type" />
-            <span className={styles.stepText}>Type what you signed.</span>
+            <span className={styles.stepText}>
+              {signed ? "Type what you signed." : "Type what you said."}
+            </span>
           </li>
           <li>
             <StepIcon name="plus" />
@@ -135,49 +138,18 @@ export function HelpDialog({ signed = true }: { signed?: boolean }) {
           </li>
           <li>
             <StepIcon name="repeat" />
-            <span className={styles.stepText}>Repeat for each new sign.</span>
+            <span className={styles.stepText}>
+              {signed ? "Repeat for each new sign." : "Repeat for each new sentence."}
+            </span>
           </li>
           <li>
             <StepIcon name="check" />
             <span className={styles.stepText}>
-              When every sign has a caption, check &ldquo;These captions are
-              accurate&rdquo; to continue.
+              When you are done with captions, check &ldquo;These captions
+              are accurate&rdquo; to continue.
             </span>
           </li>
         </ol>
-        ) : (
-        <ol id="help-steps" role="list" className={styles.dialogSteps}>
-          <li>
-            <StepIcon name="play" />
-            <span className={styles.stepText}>
-              We made a draft from your voice. Click Play from start.
-            </span>
-          </li>
-          <li>
-            <StepIcon name="check" />
-            <span className={styles.stepText}>Read each line as it appears.</span>
-          </li>
-          <li>
-            <StepIcon name="type" />
-            <span className={styles.stepText}>
-              A word is wrong? Click Edit on that line and fix it.
-            </span>
-          </li>
-          <li>
-            <StepIcon name="plus" />
-            <span className={styles.stepText}>
-              A line is missing? Pause the video, type it, and click Add line.
-            </span>
-          </li>
-          <li>
-            <StepIcon name="check" />
-            <span className={styles.stepText}>
-              When every line says what you said, check &ldquo;These captions are
-              accurate&rdquo; to continue.
-            </span>
-          </li>
-        </ol>
-        )}
         <button
           type="button"
           className={styles.button}

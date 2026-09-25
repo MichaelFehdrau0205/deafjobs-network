@@ -22,38 +22,18 @@ const MAX_LINE = 84;
 let nextId = 0;
 const newId = () => `cue-${Date.now()}-${nextId++}`;
 
-// Demo only: stands in for speech-to-text. It has two wrong words on purpose
-// ("where house", "roll") so the review step has something real to catch.
-function draftFor(name: string, duration: number): Cue[] {
-  const lines = [
-    `Hi, I'm ${name || "Sam"}.`,
-    "I've worked in a where house for six years.",
-    "Right now I lead a team of twelve on the night shift.",
-    "I'm good at keeping things organized and training new people.",
-    "I'm looking for a roll where I can grow into logistics.",
-  ];
-  // Spread the lines across the video so they line up roughly.
-  const span = duration > 1 ? duration : 20;
-  const step = span / lines.length;
-  return lines.map((text, i) => ({
-    id: newId(),
-    start: Number((i * step).toFixed(1)),
-    text,
-  }));
-}
-
 const sortCues = (cues: Cue[]) => [...cues].sort((a, b) => a.start - b.start);
 
 type Errors = { noLines?: boolean; pending?: boolean; confirm?: boolean };
 
 export function CaptionsStep() {
   const router = useRouter();
-  const { basics, video, captions, saveCaptions } = useProfileDraft();
+  const { video, captions, saveCaptions } = useProfileDraft();
 
   const [cues, setCues] = useState<Cue[]>(() => {
     if (!video?.mode) return [];
     if (captions.forMode === video.mode && captions.cues.length) return captions.cues;
-    return video.mode === "spoke" ? draftFor(basics.displayName, video.duration) : [];
+    return [];
   });
   const [draft, setDraft] = useState("");
   const [lineError, setLineError] = useState<string | null>(null);
@@ -235,11 +215,117 @@ export function CaptionsStep() {
   if (errors.confirm)
     problems.push({ href: "#confirm", text: "Tick the box to confirm your captions are accurate." });
 
+  const addSection = (
+    <section aria-labelledby="add-title">
+      <div className={styles.titleRow}>
+        <h2 id="add-title" className={styles.sectionTitle}>
+          Add a caption line
+        </h2>
+        <HelpDialog signed={signed} />
+      </div>
+      <label className={styles.label} htmlFor="caption-line">
+        Caption line
+      </label>
+      <p id="caption-line-hint" className={styles.hint}>
+        {signed ? "What you signed, in your words. " : "What you said, in your words. "}
+        Keep it short, up to {MAX_LINE} characters. It starts at the
+        video&rsquo;s current time: <strong>{formatTime(time)}</strong>.
+      </p>
+      <div className={styles.addRow}>
+        <input
+          ref={inputRef}
+          id="caption-line"
+          type="text"
+          className={`${styles.input} ${styles.lineInput} ${lineError ? styles.inputError : ""}`}
+          value={draft}
+          maxLength={MAX_LINE}
+          aria-invalid={lineError ? true : undefined}
+          aria-describedby={
+            lineError ? "caption-line-hint caption-line-error" : "caption-line-hint"
+          }
+          onChange={(e) => onDraftChange(e.target.value)}
+          onKeyDown={(e) => {
+            // Enter adds the line; it must not submit the whole step.
+            if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+              e.preventDefault();
+              addLine();
+            }
+          }}
+        />
+        <button id="add-line" type="button" className={styles.button} onClick={addLine}>
+          Add line
+        </button>
+      </div>
+      {lineError && (
+        <p id="caption-line-error" className={styles.error} role="alert">
+          <span className={styles.errorIcon} aria-hidden="true">
+            !
+          </span>
+          <span>
+            <span className={styles.srOnly}>Error: </span>
+            {lineError}
+          </span>
+        </p>
+      )}
+    </section>
+  );
+
+  const listSection = (
+    <section aria-labelledby="lines-title">
+      <h2 id="lines-title" className={styles.sectionTitle}>
+        Your caption lines ({cues.length})
+      </h2>
+      {cues.length === 0 ? (
+        <p className={styles.hint}>No lines yet. Add your first one above.</p>
+      ) : (
+        <ol className={styles.lineList}>
+          {cues.map((cue, i) => {
+            const n = i + 1;
+            return (
+              <li
+                key={cue.id}
+                className={`${styles.lineItem} ${i === active ? styles.lineActive : ""}`}
+              >
+                <span className={styles.lineTime}>
+                  <span className={styles.srOnly}>Starts at </span>
+                  {formatTime(cue.start)}
+                </span>
+                <span className={styles.lineText}>{cue.text}</span>
+                {i === active && (
+                  <span className={styles.nowTag}>
+                    <span aria-hidden="true">●</span> On screen now
+                  </span>
+                )}
+                <span className={styles.lineTools}>
+                  <button
+                    type="button"
+                    className={styles.toolButton}
+                    onClick={() => editLine(cue.id, n)}
+                  >
+                    Edit<span className={styles.srOnly}> line {n}: {cue.text}</span>
+                  </button>
+                  <button
+                    id={`${cue.id}-remove`}
+                    type="button"
+                    className={styles.toolRemove}
+                    onClick={() => removeLine(cue.id, n)}
+                  >
+                    Remove<span className={styles.srOnly}> line {n}: {cue.text}</span>
+                  </button>
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </section>
+  );
+
   return (
     <>
       <Progress current={4} />
       <FocusHeading className={styles.title}>
-        {signed ? "Write your captions" : "Check your captions"}
+        Write your captions
       </FocusHeading>
       <p className={styles.intro}>
         {signed ? (
@@ -251,9 +337,9 @@ export function CaptionsStep() {
           </>
         ) : (
           <>
-            We made a draft from your voice. Auto-captions get about 1 word in 10
-            wrong, so press Play from start and use Edit on any line that isn&rsquo;t
-            what you said.
+            Employers will read these captions as they watch your video. Play the
+            video, pause where a line starts, type what you said and press Add line.
+            Then press Play from start to watch it the way an employer will.
           </>
         )}
       </p>
@@ -368,109 +454,8 @@ export function CaptionsStep() {
           </div>
 
           <div className={styles.lines}>
-            {/* ---------- add a line ---------- */}
-            <section aria-labelledby="add-title">
-              <div className={styles.titleRow}>
-                <h2 id="add-title" className={styles.sectionTitle}>
-                  Add a caption line
-                </h2>
-                <HelpDialog signed={signed} />
-              </div>
-              <label className={styles.label} htmlFor="caption-line">
-                Caption line
-              </label>
-              <p id="caption-line-hint" className={styles.hint}>
-                {signed ? "What you signed, in your words. " : ""}
-                Keep it short, up to {MAX_LINE} characters. It starts at the
-                video&rsquo;s current time: <strong>{formatTime(time)}</strong>.
-              </p>
-              <div className={styles.addRow}>
-                <input
-                  ref={inputRef}
-                  id="caption-line"
-                  type="text"
-                  className={`${styles.input} ${styles.lineInput} ${lineError ? styles.inputError : ""}`}
-                  value={draft}
-                  maxLength={MAX_LINE}
-                  aria-invalid={lineError ? true : undefined}
-                  aria-describedby={
-                    lineError ? "caption-line-hint caption-line-error" : "caption-line-hint"
-                  }
-                  onChange={(e) => onDraftChange(e.target.value)}
-                  onKeyDown={(e) => {
-                    // Enter adds the line; it must not submit the whole step.
-                    if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-                      e.preventDefault();
-                      addLine();
-                    }
-                  }}
-                />
-                <button id="add-line" type="button" className={styles.button} onClick={addLine}>
-                  Add line
-                </button>
-              </div>
-              {lineError && (
-                <p id="caption-line-error" className={styles.error} role="alert">
-                  <span className={styles.errorIcon} aria-hidden="true">
-                    !
-                  </span>
-                  <span>
-                    <span className={styles.srOnly}>Error: </span>
-                    {lineError}
-                  </span>
-                </p>
-              )}
-            </section>
-
-            {/* ---------- the list ---------- */}
-            <section aria-labelledby="lines-title">
-              <h2 id="lines-title" className={styles.sectionTitle}>
-                Your caption lines ({cues.length})
-              </h2>
-              {cues.length === 0 ? (
-                <p className={styles.hint}>No lines yet. Add your first one above.</p>
-              ) : (
-                <ol className={styles.lineList}>
-                  {cues.map((cue, i) => {
-                    const n = i + 1;
-                    return (
-                      <li
-                        key={cue.id}
-                        className={`${styles.lineItem} ${i === active ? styles.lineActive : ""}`}
-                      >
-                        <span className={styles.lineTime}>
-                          <span className={styles.srOnly}>Starts at </span>
-                          {formatTime(cue.start)}
-                        </span>
-                        <span className={styles.lineText}>{cue.text}</span>
-                        {i === active && (
-                          <span className={styles.nowTag}>
-                            <span aria-hidden="true">●</span> On screen now
-                          </span>
-                        )}
-                        <span className={styles.lineTools}>
-                          <button
-                            type="button"
-                            className={styles.toolButton}
-                            onClick={() => editLine(cue.id, n)}
-                          >
-                            Edit<span className={styles.srOnly}> line {n}: {cue.text}</span>
-                          </button>
-                          <button
-                            id={`${cue.id}-remove`}
-                            type="button"
-                            className={styles.toolRemove}
-                            onClick={() => removeLine(cue.id, n)}
-                          >
-                            Remove<span className={styles.srOnly}> line {n}: {cue.text}</span>
-                          </button>
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ol>
-              )}
-            </section>
+            {addSection}
+            {listSection}
           </div>
         </div>
 
