@@ -60,13 +60,13 @@
 }
 .searchInput {
   flex: 1 1 260px;
-  min-height: 44px;
-  padding: 0.5rem 0.9rem;
+  min-height: 34px;
+  padding: 0.3rem 0.7rem;
   font: inherit;
-  font-size: 1rem;
+  font-size: 14px;
   color: var(--ink);
   background: #fff;
-  border: 2px solid var(--line);
+  border: 1px solid #7f7f96;
   border-radius: 6px;
 }
 .searchInput:focus-visible {
@@ -75,13 +75,13 @@
   border-color: var(--blue);
 }
 .locationSelect {
-  min-height: 44px;
-  padding: 0.5rem 0.9rem;
+  min-height: 34px;
+  padding: 0.3rem 0.7rem;
   font: inherit;
-  font-size: 1rem;
+  font-size: 14px;
   color: var(--ink);
   background: #fff;
-  border: 2px solid var(--line);
+  border: 1px solid #7f7f96;
   border-radius: 6px;
 }
 
