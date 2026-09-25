@@ -1,0 +1,232 @@
+/* The two sign-in modals mirror the two halves of the landing page:
+   candidates get the green half's colours (blue on green), employers get the
+   blue half's (green on blue). Same structure, only these variables change. */
+.dialog {
+  --green: #00e87a;
+  --blue: #1400e6;
+  --error: #b00020;
+
+  /* Tailwind's reset zeroes every margin, which cancels the browser's own
+     "margin: auto" that centres a modal <dialog>. Put it back. */
+  margin: auto;
+  width: min(30rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  overflow: auto;
+  color: var(--fg);
+  background: var(--bg);
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+.dialog::backdrop {
+  background: rgba(20, 20, 46, 0.7);
+}
+.candidate {
+  --bg: var(--green);
+  --fg: var(--blue);
+  --btn-bg: var(--blue);
+  --btn-fg: var(--green);
+}
+.employer {
+  --bg: var(--blue);
+  --fg: var(--green);
+  --btn-bg: var(--green);
+  --btn-fg: var(--blue);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.body {
+  padding: clamp(1.25rem, 5vw, 2rem);
+}
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.title {
+  margin: 0;
+  font-size: clamp(1.5rem, 5vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* ---------- close (x) ---------- */
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: -0.25rem -0.25rem 0 0;
+  color: var(--fg);
+  background: transparent;
+  border: 2px solid var(--fg);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.closeButton:hover {
+  color: var(--bg);
+  background: var(--fg);
+}
+
+/* ---------- the three ways to sign in, and the Verify button ---------- */
+.options {
+  display: grid;
+  gap: 0.85rem;
+}
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 1.25rem;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border: 2px solid var(--btn-bg);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.option:hover {
+  color: var(--blue);
+  background: #fff;
+  border-color: #fff;
+}
+.verify {
+  margin-top: 1.25rem;
+}
+
+/* One focus style everywhere in the modal: a thick ring in the modal's own
+   text colour, offset so it never touches the content. */
+.dialog button:focus-visible,
+.codeInput:focus ~ .boxes .boxActive {
+  outline: 3px solid var(--fg);
+  outline-offset: 3px;
+}
+
+/* ---------- code screen ---------- */
+.hint {
+  margin: 0 0 1.25rem;
+  line-height: 1.5;
+  font-weight: 600;
+}
+.label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+}
+.codeWrap {
+  position: relative;
+}
+/* The real input covers the boxes. Invisible, but it still takes typing,
+   paste, autofill and focus; 16px+ text stops iOS zooming in on focus. */
+.codeInput {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 1.25rem;
+  color: transparent;
+  caret-color: transparent;
+  background: transparent;
+  border: 0;
+  opacity: 0.01;
+  cursor: text;
+}
+.boxes {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(0.35rem, 2vw, 0.6rem);
+}
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(3.2rem, 14vw, 4rem);
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--blue);
+  background: #fff;
+  border: 2px solid var(--fg);
+  border-radius: 8px;
+}
+/* The box that will get the next digit: a thicker border while typing. */
+.codeInput:focus ~ .boxes .boxActive {
+  border-width: 4px;
+}
+
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.8rem;
+  font-weight: 700;
+  color: var(--error);
+  background: #fff; /* white so the red always reads, on green or blue */
+  border: 2px solid var(--error);
+  border-radius: 8px;
+}
+.errorIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fff;
+  background: var(--error);
+  border-radius: 50%;
+}
+.resent {
+  min-height: 1.5rem;
+  margin: 0.75rem 0 0;
+  font-weight: 700;
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin-top: 1rem;
+}
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}

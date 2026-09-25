@@ -502,6 +502,9 @@
   outline-offset: 3px;
 }
 .dialog {
+  /* Tailwind's reset zeroes every margin, which cancels the browser's own
+     "margin: auto" that centres a modal <dialog>. Put it back. */
+  margin: auto;
   width: min(32rem, calc(100vw - 2rem));
   padding: 1.5rem;
   color: var(--ink);

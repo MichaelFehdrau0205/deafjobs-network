@@ -1,0 +1,51 @@
+/* The blue half of the landing page: green on blue. */
+.page {
+  --green: #00e87a;
+  --blue: #1400e6;
+
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: clamp(1.4rem, 6vw, 5.5rem);
+  color: var(--green);
+  background: var(--blue);
+}
+.card {
+  width: 100%;
+  max-width: 40rem;
+}
+.title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.9rem, 6vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.text {
+  margin: 0 0 2rem;
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  line-height: 1.5;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+}
+.action {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.action:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 2px;
+}

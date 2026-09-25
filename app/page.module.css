@@ -203,7 +203,8 @@
     white-space: normal;
     row-gap: 0.3em;
   }
-  .links a {
+  .links a,
+  .links button {
     white-space: pre-wrap;
   }
   .top .links,
@@ -223,7 +224,8 @@
   padding: 0 0.34em;
   opacity: 0.6;
 }
-.links a {
+.links a,
+.links button {
   /* 44px minimum tap target in both directions; on phones the row wraps
      (see max-width: 479px) so the wider hit areas never force a scroll */
   display: inline-flex;
@@ -241,19 +243,31 @@
   padding: 0.35em 0;
   border-top: 2px solid transparent;
   border-bottom: 2px solid transparent;
+  /* buttons only: look exactly like the links beside them */
+  font: inherit;
+  letter-spacing: inherit;
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  cursor: pointer;
 }
 /* the rule sits on the side facing away from the wordmark:
    above on the candidate row, below on the employer row */
 .top .links a:hover,
-.top .links a:focus-visible {
+.top .links a:focus-visible,
+.top .links button:hover,
+.top .links button:focus-visible {
   border-top-color: currentColor;
 }
 .bottom .links a:hover,
-.bottom .links a:focus-visible {
+.bottom .links a:focus-visible,
+.bottom .links button:hover,
+.bottom .links button:focus-visible {
   border-bottom-color: currentColor;
 }
 
-.links a:focus-visible {
+.links a:focus-visible,
+.links button:focus-visible {
   outline: 3px solid currentColor;
   outline-offset: 3px;
   border-radius: 2px;
@@ -295,7 +309,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .links a {
+  .links a,
+  .links button {
     transition: none;
   }
 }

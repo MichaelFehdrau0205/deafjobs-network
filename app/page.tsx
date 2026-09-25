@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SignInLink } from "./auth/sign-in-link";
 import styles from "./page.module.css";
 
 // DEAF and JOBS paths, lifted from deafjobs-wordmark-outlined.svg and split
@@ -121,7 +122,7 @@ export default function Home() {
                 <a href="#">Resources</a>
               </li>
               <li>
-                <a href="#">Sign in</a>
+                <SignInLink role="candidate" />
               </li>
             </ul>
           </nav>
@@ -186,7 +187,7 @@ export default function Home() {
                 <a href="#">How it works</a>
               </li>
               <li>
-                <a href="#">Sign in</a>
+                <SignInLink role="employer" />
               </li>
             </ul>
           </nav>
