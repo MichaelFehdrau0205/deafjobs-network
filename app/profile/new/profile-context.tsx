@@ -17,7 +17,11 @@ export type PhoneContactType = "" | "text" | "call";
 
 export type Basics = {
   displayName: string;
-  homeAddress: string;
+  street: string; // street address, line 1
+  street2: string; // apartment, suite or unit (optional)
+  city: string;
+  state: string; // two-letter code, like NY
+  zip: string; // 5 digits, or ZIP+4
   vrsPhone: string; // Video Relay Service number: calls placed through an ASL interpreter
   textOrCallPhone: string; // direct text or voice call number (e.g. for hard of hearing candidates)
   phoneContactType: PhoneContactType; // whether that direct number takes texts or voice calls
@@ -105,7 +109,11 @@ export function emptyEducation(): EducationEntry {
 
 const EMPTY: Basics = {
   displayName: "",
-  homeAddress: "",
+  street: "",
+  street2: "",
+  city: "",
+  state: "",
+  zip: "",
   vrsPhone: "",
   textOrCallPhone: "",
   phoneContactType: "",
@@ -226,3 +234,25 @@ export const COMM_PREFERENCE_LABELS: Record<Exclude<CommPreference, "">, string>
   english: "English preferred",
   both: "Both ASL and English",
 };
+
+// The home address as display lines: street (and apartment) on the first, then
+// "City, ST 12345". Empty parts are left out.
+export function formatAddress(b: Pick<Basics, "street" | "street2" | "city" | "state" | "zip">): string[] {
+  const line1 = [b.street, b.street2].filter(Boolean).join(", ");
+  const cityState = [b.city, [b.state, b.zip].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  return [line1, cityState].filter(Boolean);
+}
+
+export const US_STATES: [string, string][] = [
+  ["AL", "Alabama"], ["AK", "Alaska"], ["AZ", "Arizona"], ["AR", "Arkansas"], ["CA", "California"],
+  ["CO", "Colorado"], ["CT", "Connecticut"], ["DE", "Delaware"], ["DC", "District of Columbia"],
+  ["FL", "Florida"], ["GA", "Georgia"], ["HI", "Hawaii"], ["ID", "Idaho"], ["IL", "Illinois"],
+  ["IN", "Indiana"], ["IA", "Iowa"], ["KS", "Kansas"], ["KY", "Kentucky"], ["LA", "Louisiana"],
+  ["ME", "Maine"], ["MD", "Maryland"], ["MA", "Massachusetts"], ["MI", "Michigan"], ["MN", "Minnesota"],
+  ["MS", "Mississippi"], ["MO", "Missouri"], ["MT", "Montana"], ["NE", "Nebraska"], ["NV", "Nevada"],
+  ["NH", "New Hampshire"], ["NJ", "New Jersey"], ["NM", "New Mexico"], ["NY", "New York"],
+  ["NC", "North Carolina"], ["ND", "North Dakota"], ["OH", "Ohio"], ["OK", "Oklahoma"], ["OR", "Oregon"],
+  ["PA", "Pennsylvania"], ["RI", "Rhode Island"], ["SC", "South Carolina"], ["SD", "South Dakota"],
+  ["TN", "Tennessee"], ["TX", "Texas"], ["UT", "Utah"], ["VT", "Vermont"], ["VA", "Virginia"],
+  ["WA", "Washington"], ["WV", "West Virginia"], ["WI", "Wisconsin"], ["WY", "Wyoming"],
+];

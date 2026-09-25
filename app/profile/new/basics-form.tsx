@@ -12,22 +12,34 @@ import {
   type SalaryType,
   COMMUTE_LABELS,
   COMM_PREFERENCE_LABELS,
+  US_STATES,
 } from "./profile-context";
 import styles from "./profile.module.css";
 
-type FieldName = "displayName" | "homeAddress" | "headline" | "commPreference";
+type FieldName = "displayName" | "street" | "city" | "state" | "zip" | "headline" | "commPreference";
 type Errors = Partial<Record<FieldName, string>>;
 
 // Plain-language messages: say what to do, with an example where it helps.
 const MESSAGES: Record<FieldName, string> = {
   displayName: "Enter the name you want employers to see. A first name is fine.",
-  homeAddress: "Enter where you live, like a city and state, or a full address.",
+  street: "Enter your street address, like 123 Main Street.",
+  city: "Enter your city.",
+  state: "Choose your state.",
+  zip: "Enter your 5-digit ZIP code, like 11201.",
   headline: "Write one short line about the work you do or want to do.",
   commPreference: "Choose the option that best describes how you communicate.",
 };
 
 // Order matches the order on the page, so the summary reads top to bottom.
-const FIELD_ORDER: FieldName[] = ["displayName", "homeAddress", "headline", "commPreference"];
+const FIELD_ORDER: FieldName[] = [
+  "displayName",
+  "street",
+  "city",
+  "state",
+  "zip",
+  "headline",
+  "commPreference",
+];
 
 const COMMUTE_OPTIONS: Exclude<CommuteRange, "">[] = ["local", "15", "30", "50", "anywhere"];
 const COMM_PREFERENCE_OPTIONS: Exclude<CommPreference, "">[] = [
@@ -41,7 +53,10 @@ const COMM_PREFERENCE_OPTIONS: Exclude<CommPreference, "">[] = [
 function validate(v: Basics): Errors {
   const errors: Errors = {};
   if (!v.displayName.trim()) errors.displayName = MESSAGES.displayName;
-  if (!v.homeAddress.trim()) errors.homeAddress = MESSAGES.homeAddress;
+  if (!v.street.trim()) errors.street = MESSAGES.street;
+  if (!v.city.trim()) errors.city = MESSAGES.city;
+  if (!v.state) errors.state = MESSAGES.state;
+  if (!/^\d{5}(-\d{4})?$/.test(v.zip.trim())) errors.zip = MESSAGES.zip;
   if (!v.headline.trim()) errors.headline = MESSAGES.headline;
   if (!v.commPreference) errors.commPreference = MESSAGES.commPreference;
   return errors;
@@ -97,7 +112,10 @@ export function BasicsForm() {
     saveBasics({
       ...values,
       displayName: values.displayName.trim(),
-      homeAddress: values.homeAddress.trim(),
+      street: values.street.trim(),
+      street2: values.street2.trim(),
+      city: values.city.trim(),
+      zip: values.zip.trim(),
       headline: values.headline.trim(),
       roleInterest: values.roleInterest.trim(),
       salaryAmount: values.salaryAmount.trim(),
@@ -166,16 +184,88 @@ export function BasicsForm() {
           onChange={(displayName) => update({ ...values, displayName })}
         />
 
-        <TextField
-          id="homeAddress"
-          label="Home address"
-          hint="A city and state is enough, or a full address if you'd rather. Example: Brooklyn, NY."
-          autoComplete="street-address"
-          maxLength={120}
-          value={values.homeAddress}
-          error={errors.homeAddress}
-          onChange={(homeAddress) => update({ ...values, homeAddress })}
-        />
+        <fieldset className={styles.addressGroup}>
+          <legend className={styles.label}>Home address</legend>
+          <p className={styles.hint}>
+            Employers use this to see how far you live from the job.
+          </p>
+
+          <TextField
+            id="street"
+            label="Street address"
+            placeholder="123 Main Street"
+            autoComplete="address-line1"
+            maxLength={100}
+            value={values.street}
+            error={errors.street}
+            onChange={(street) => update({ ...values, street })}
+          />
+          <TextField
+            id="street2"
+            label="Apartment, suite or unit (optional)"
+            placeholder="Apt 4B"
+            autoComplete="address-line2"
+            maxLength={60}
+            value={values.street2}
+            onChange={(street2) => update({ ...values, street2 })}
+          />
+          <TextField
+            id="city"
+            label="City"
+            placeholder="Brooklyn"
+            autoComplete="address-level2"
+            maxLength={60}
+            value={values.city}
+            error={errors.city}
+            onChange={(city) => update({ ...values, city })}
+          />
+
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="state">
+              State
+            </label>
+            <select
+              id="state"
+              name="state"
+              autoComplete="address-level1"
+              className={`${styles.input} ${errors.state ? styles.inputError : ""}`}
+              value={values.state}
+              aria-invalid={errors.state ? true : undefined}
+              aria-describedby={errors.state ? "state-error" : undefined}
+              onChange={(e) => update({ ...values, state: e.target.value })}
+            >
+              <option value="">Choose your state</option>
+              {US_STATES.map(([abbr, name]) => (
+                <option key={abbr} value={abbr}>
+                  {name}
+                </option>
+              ))}
+            </select>
+            {errors.state && (
+              <p id="state-error" className={styles.error}>
+                <span className={styles.errorIcon} aria-hidden="true">
+                  !
+                </span>
+                <span>
+                  <span className={styles.srOnly}>Error: </span>
+                  {errors.state}
+                </span>
+              </p>
+            )}
+          </div>
+
+          <TextField
+            id="zip"
+            label="ZIP code"
+            placeholder="11201"
+            autoComplete="postal-code"
+            inputMode="numeric"
+            maxLength={10}
+            value={values.zip}
+            error={errors.zip}
+            onChange={(zip) => update({ ...values, zip })}
+          />
+        </fieldset>
 
         <div className={styles.field}>
           <span className={styles.label}>Phone numbers</span>
@@ -424,14 +514,16 @@ export function BasicsForm() {
 function TextField(props: {
   id: string;
   label: string;
-  hint: string;
+  hint?: string;
+  placeholder?: string;
   error?: string;
   value: string;
   maxLength: number;
   autoComplete?: string;
+  inputMode?: "numeric";
   onChange: (value: string) => void;
 }) {
-  const { id, label, hint, error, value, maxLength, autoComplete, onChange } = props;
+  const { id, label, hint, placeholder, error, value, maxLength, autoComplete, inputMode, onChange } = props;
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
   return (
@@ -439,9 +531,11 @@ function TextField(props: {
       <label className={styles.label} htmlFor={id}>
         {label}
       </label>
-      <p id={hintId} className={styles.hint}>
-        {hint}
-      </p>
+      {hint && (
+        <p id={hintId} className={styles.hint}>
+          {hint}
+        </p>
+      )}
       <input
         id={id}
         name={id}
@@ -450,9 +544,13 @@ function TextField(props: {
         value={value}
         maxLength={maxLength}
         autoComplete={autoComplete}
+        placeholder={placeholder}
+        inputMode={inputMode}
         aria-required={error !== undefined ? "true" : undefined}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${hintId} ${errorId}` : hintId}
+        aria-describedby={
+          error ? (hint ? `${hintId} ${errorId}` : errorId) : hint ? hintId : undefined
+        }
         onChange={(e) => onChange(e.target.value)}
       />
       {error && (

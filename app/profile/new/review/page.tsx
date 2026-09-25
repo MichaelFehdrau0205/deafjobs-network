@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FocusHeading } from "../focus-heading";
 import { useVideoLater } from "../video-later-store";
-import { useProfileDraft, formatTime, COMMUTE_LABELS, COMM_PREFERENCE_LABELS } from "../profile-context";
+import { useProfileDraft, formatTime, formatAddress, COMMUTE_LABELS, COMM_PREFERENCE_LABELS } from "../profile-context";
 import styles from "../profile.module.css";
 
 // End of the demo build: a preview of what an employer would see, and
@@ -25,7 +25,11 @@ export default function ReviewPage() {
         <h2 id="preview-title" className={styles.panelTitle}>
           {basics.displayName || "Your name"}
         </h2>
-        {basics.homeAddress && <p className={styles.hint}>{basics.homeAddress}</p>}
+        {formatAddress(basics).map((line) => (
+          <p key={line} className={styles.hint} style={{ margin: 0 }}>
+            {line}
+          </p>
+        ))}
         {basics.vrsPhone && <p className={styles.hint}>VRS: {basics.vrsPhone}</p>}
         {basics.textOrCallPhone && (
           <p className={styles.hint}>
