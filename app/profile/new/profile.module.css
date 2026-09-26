@@ -961,11 +961,12 @@
 /* ---------- work-location chips (basics step) ---------- */
 .chipInputRow {
   display: flex;
+  flex-wrap: wrap; /* on a phone the state list and Add drop to a second row */
   gap: 0.6rem;
   align-items: stretch;
 }
 .chipInputRow .input {
-  flex: 1;
+  flex: 1 1 12rem;
 }
 .chipAddButton {
   flex: none;

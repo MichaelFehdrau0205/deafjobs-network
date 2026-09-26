@@ -79,6 +79,7 @@ export function BasicsForm() {
   const { basics, saveBasics } = useProfileDraft();
   const [values, setValues] = useState<Basics>(basics);
   const [locationDraft, setLocationDraft] = useState("");
+  const [locationState, setLocationState] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   // Don't scold people while they're still typing the first time through:
   // errors only appear after they press Next, then update as they fix things.
@@ -97,15 +98,20 @@ export function BasicsForm() {
     if (attempted) setErrors(validate(next));
   }
 
+  // City from the box, state from the list, joined as "Brooklyn, NY". Choosing
+  // the state from a list means nobody types (and mistypes) "NY".
   function addWorkLocation() {
-    const v = locationDraft.trim();
-    if (!v) return;
+    const city = locationDraft.replace(/\s*,\s*/g, ", ").replace(/[\s,]+$/, "").trim();
+    if (!city) return;
+    const v = locationState ? `${city}, ${locationState}` : city;
     if (values.workLocations.includes(v)) {
       setLocationDraft("");
+      setLocationState("");
       return;
     }
     update({ ...values, workLocations: [...values.workLocations, v] });
     setLocationDraft("");
+    setLocationState("");
   }
 
   function removeWorkLocation(loc: string) {
@@ -385,7 +391,7 @@ export function BasicsForm() {
             Where would you like to work?
           </label>
           <p className={styles.hint}>
-            Add as many cities or areas as you want. Example: Brooklyn, NY.
+            Add as many cities as you want. Type the city, then pick its state from the list.
           </p>
           <div className={styles.chipInputRow}>
             <input
@@ -396,7 +402,7 @@ export function BasicsForm() {
               className={styles.input}
               value={locationDraft}
               maxLength={80}
-              placeholder="Add a city or area"
+              placeholder="City, like Brooklyn"
               onChange={(e) => setLocationDraft(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -405,6 +411,22 @@ export function BasicsForm() {
                 }
               }}
             />
+            <select
+              id="work-location-state"
+              aria-label="State for this city"
+              autoComplete="off"
+              className={styles.input}
+              style={{ flex: "0 1 11rem" }}
+              value={locationState}
+              onChange={(e) => setLocationState(e.target.value)}
+            >
+              <option value="">State</option>
+              {US_STATES.map(([abbr, name]) => (
+                <option key={abbr} value={abbr}>
+                  {name}
+                </option>
+              ))}
+            </select>
             <button type="button" className={styles.chipAddButton} onClick={addWorkLocation}>
               Add
             </button>
