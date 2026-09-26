@@ -80,7 +80,6 @@ export function BasicsForm() {
   const { basics, saveBasics } = useProfileDraft();
   const [values, setValues] = useState<Basics>(basics);
   const [locationDraft, setLocationDraft] = useState("");
-  const [locationState, setLocationState] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   // Don't scold people while they're still typing the first time through:
   // errors only appear after they press Next, then update as they fix things.
@@ -99,12 +98,11 @@ export function BasicsForm() {
     if (attempted) setErrors(validate(next));
   }
 
-  // City from the box, state from the list, joined as "Brooklyn, NY". Choosing
-  // the state from a list means nobody types (and mistypes) "NY".
+  // One box: the city (and state if typed), joined as "Brooklyn, NY" for known cities.
   function addWorkLocation() {
     let city = locationDraft.replace(/\s*,\s*/g, ", ").replace(/[\s,]+$/, "").trim();
     if (!city) return;
-    let state = locationState;
+    let state = "";
     // A well-known city on its own ("Boston") gets its state or country added ("Boston, MA", "Paris, France").
     // A state picked from the list always wins, and a city with a comma is
     // left exactly as typed.
@@ -118,12 +116,10 @@ export function BasicsForm() {
     const v = state ? `${city}, ${state}` : city;
     if (values.workLocations.includes(v)) {
       setLocationDraft("");
-      setLocationState("");
       return;
     }
     update({ ...values, workLocations: [...values.workLocations, v] });
     setLocationDraft("");
-    setLocationState("");
   }
 
   function removeWorkLocation(loc: string) {
@@ -403,7 +399,7 @@ export function BasicsForm() {
             Where would you like to work?
           </label>
           <p className={styles.hint}>
-            Add as many cities as you want. Type the city and press Add. For well-known cities we add the state or country. If we don&rsquo;t, pick the state from the list.
+            Add as many cities as you want. Type the city and press Add. For well-known cities we add the state or country. For a small town, type it like Ames, IA.
           </p>
           <div className={styles.chipInputRow}>
             <input
@@ -423,22 +419,6 @@ export function BasicsForm() {
                 }
               }}
             />
-            <select
-              id="work-location-state"
-              aria-label="State for this city"
-              autoComplete="off"
-              className={styles.input}
-              style={{ flex: "0 1 11rem" }}
-              value={locationState}
-              onChange={(e) => setLocationState(e.target.value)}
-            >
-              <option value="">State</option>
-              {US_STATES.map(([abbr, name]) => (
-                <option key={abbr} value={abbr}>
-                  {name}
-                </option>
-              ))}
-            </select>
             <button type="button" className={styles.chipAddButton} onClick={addWorkLocation}>
               Add
             </button>
