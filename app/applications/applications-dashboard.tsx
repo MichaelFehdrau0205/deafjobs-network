@@ -19,13 +19,21 @@ import styles from "./applications.module.css";
 
 type Filter = "all" | "waiting" | "messages" | "declined";
 
-const FILTERS: { id: Filter; label: string; match: (s: Status) => boolean }[] = [
-  { id: "all", label: "All", match: () => true },
-  { id: "waiting", label: "Waiting", match: (s) => s === "applied" || s === "viewed" },
-  { id: "messages", label: "Messages & interviews", match: (s) => s === "messaged" || s === "interview" },
-  { id: "declined", label: "Not a match", match: (s) => s === "declined" },
-];
-
+const FILTERS: { id: Filter; label: string; match: (s: Status) => boolean }[] =
+  [
+    { id: "all", label: "All", match: () => true },
+    {
+      id: "waiting",
+      label: "Waiting",
+      match: (s) => s === "applied" || s === "viewed",
+    },
+    {
+      id: "messages",
+      label: "Messages & interviews",
+      match: (s) => s === "messaged" || s === "interview",
+    },
+    { id: "declined", label: "Not a match", match: (s) => s === "declined" },
+  ];
 
 // How the candidate wants to hear back. Saved on this device. The demo saves
 // the choice but doesn't send real alerts yet.
@@ -64,12 +72,16 @@ function AlertPreferences() {
   const chosen = useMemo(() => raw.split(",").filter(Boolean), [raw]);
 
   function toggle(id: string) {
-    writeAlerts(chosen.includes(id) ? chosen.filter((c) => c !== id) : [...chosen, id]);
+    writeAlerts(
+      chosen.includes(id) ? chosen.filter((c) => c !== id) : [...chosen, id],
+    );
   }
 
   return (
     <fieldset className={styles.alerts}>
-      <legend className={styles.alertsLegend}>How do you want to hear from employers?</legend>
+      <legend className={styles.alertsLegend}>
+        How do you want to hear from employers?
+      </legend>
       <p className={styles.alertsNote}>
         Optional. Pick any, or none. You can always just check this page.
       </p>
@@ -86,7 +98,9 @@ function AlertPreferences() {
         ))}
       </div>
       <p className={styles.alertsSaved} role="status">
-        {chosen.length > 0 ? "Saved. Demo only: alerts aren't sent in this build." : ""}
+        {chosen.length > 0
+          ? "Saved. Demo only: alerts aren't sent in this build."
+          : ""}
       </p>
     </fieldset>
   );
@@ -99,9 +113,14 @@ export function ApplicationsDashboard() {
     .filter((a) => a.candidateName === DEMO_CANDIDATE)
     .sort((a, b) => b.appliedAt.localeCompare(a.appliedAt));
   const [filter, setFilter] = useState<Filter>("all");
+  const [resetCount, setResetCount] = useState(0);
+  const [justReset, setJustReset] = useState(false);
 
-  const count = (f: Filter) => mine.filter((a) => FILTERS.find((x) => x.id === f)!.match(a.status)).length;
-  const shown = mine.filter((a) => FILTERS.find((x) => x.id === filter)!.match(a.status));
+  const count = (f: Filter) =>
+    mine.filter((a) => FILTERS.find((x) => x.id === f)!.match(a.status)).length;
+  const shown = mine.filter((a) =>
+    FILTERS.find((x) => x.id === filter)!.match(a.status),
+  );
 
   return (
     <div>
@@ -110,8 +129,8 @@ export function ApplicationsDashboard() {
           <div>
             <p className={styles.reminderTitle}>Add your video introduction</p>
             <p className={styles.reminderText}>
-              Your profile is saved without a video. Employers respond most to profiles with one,
-              whenever you&rsquo;re ready.
+              Your profile is saved without a video. Employers respond most to
+              profiles with one, whenever you&rsquo;re ready.
             </p>
           </div>
           <Link href="/profile/new/video" className={styles.reminderLink}>
@@ -141,7 +160,11 @@ export function ApplicationsDashboard() {
 
       <AlertPreferences />
 
-      <div className={styles.filters} role="group" aria-label="Filter applications">
+      <div
+        className={styles.filters}
+        role="group"
+        aria-label="Filter applications"
+      >
         {FILTERS.map((f) => (
           <button
             key={f.id}
@@ -160,17 +183,32 @@ export function ApplicationsDashboard() {
       ) : (
         <ul className={styles.list}>
           {shown.map((a) => (
-            <ApplicationCard key={a.id} app={a} />
+            <ApplicationCard key={`${resetCount}-${a.id}`} app={a} />
           ))}
         </ul>
       )}
 
       <p className={styles.demoNote}>
-        Demo data. In this build the applications are examples, and messages sent from the
-        employer side show up here.{" "}
-        <button type="button" className={styles.linkButton} onClick={resetDemoApplications}>
+        Demo data. In this build the applications are examples, and messages
+        sent from the employer side show up here.{" "}
+        <button
+          type="button"
+          className={styles.linkButton}
+          onClick={() => {
+            resetDemoApplications();
+            setFilter("all");
+            setResetCount((n) => n + 1);
+            setJustReset(true);
+          }}
+        >
           Reset the demo
         </button>
+        {justReset && (
+          <span role="status">
+            {" "}
+            Done. The sample applications are back to how they started.
+          </span>
+        )}
       </p>
     </div>
   );
@@ -217,10 +255,17 @@ function ApplicationCard({ app }: { app: Application }) {
             {open ? "Hide" : "Read"} messages ({app.thread.length})
           </button>
           <div id={panelId} hidden={!open}>
-            <Thread messages={app.thread} viewer="candidate" otherName={app.company} />
+            <Thread
+              messages={app.thread}
+              viewer="candidate"
+              otherName={app.company}
+            />
             {canReply && (
               <form className={styles.replyForm} onSubmit={submitReply}>
-                <label className={styles.replyLabel} htmlFor={`reply-${app.id}`}>
+                <label
+                  className={styles.replyLabel}
+                  htmlFor={`reply-${app.id}`}
+                >
                   Your reply
                 </label>
                 <textarea
@@ -234,7 +279,11 @@ function ApplicationCard({ app }: { app: Application }) {
                   }}
                 />
                 <div className={styles.replyActions}>
-                  <button type="submit" className={styles.primary} disabled={!reply.trim()}>
+                  <button
+                    type="submit"
+                    className={styles.primary}
+                    disabled={!reply.trim()}
+                  >
                     Send reply
                   </button>
                   <span role="status" className={styles.sentNote}>

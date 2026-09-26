@@ -51,6 +51,16 @@
   font-weight: 700;
   color: #55536b;
 }
+/* Wider screens: boxes wide enough that "Messages & interviews" stays on one
+   line. Phones keep their layout. */
+@media (min-width: 40rem) {
+  .tiles {
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  }
+  .tile dt {
+    white-space: nowrap;
+  }
+}
 .tile dd {
   margin: 0;
   font-size: 1.9rem;
