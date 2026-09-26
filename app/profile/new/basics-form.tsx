@@ -14,6 +14,7 @@ import {
   COMM_PREFERENCE_LABELS,
   US_STATES,
 } from "./profile-context";
+import { lookupCity } from "./city-states";
 import styles from "./profile.module.css";
 
 type FieldName = "displayName" | "street" | "city" | "state" | "zip" | "headline" | "commPreferences";
@@ -101,9 +102,20 @@ export function BasicsForm() {
   // City from the box, state from the list, joined as "Brooklyn, NY". Choosing
   // the state from a list means nobody types (and mistypes) "NY".
   function addWorkLocation() {
-    const city = locationDraft.replace(/\s*,\s*/g, ", ").replace(/[\s,]+$/, "").trim();
+    let city = locationDraft.replace(/\s*,\s*/g, ", ").replace(/[\s,]+$/, "").trim();
     if (!city) return;
-    const v = locationState ? `${city}, ${locationState}` : city;
+    let state = locationState;
+    // A well-known city on its own ("Boston") gets its state added ("Boston, MA").
+    // A state picked from the list always wins, and a city with a comma is
+    // left exactly as typed.
+    if (!state && !city.includes(",")) {
+      const known = lookupCity(city);
+      if (known) {
+        city = known.name;
+        state = known.state;
+      }
+    }
+    const v = state ? `${city}, ${state}` : city;
     if (values.workLocations.includes(v)) {
       setLocationDraft("");
       setLocationState("");
@@ -391,7 +403,7 @@ export function BasicsForm() {
             Where would you like to work?
           </label>
           <p className={styles.hint}>
-            Add as many cities as you want. Type the city, then pick its state from the list.
+            Add as many cities as you want. Type the city and press Add. For big cities we add the state. If we don&rsquo;t, pick it from the list.
           </p>
           <div className={styles.chipInputRow}>
             <input
