@@ -15,6 +15,7 @@ html {
 }
 
 body {
+  overflow-wrap: break-word; /* a long unbroken word can't push a page wider than the screen */
   margin: 0;
   font-family: var(--font-poppins), system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 500;
@@ -28,5 +29,17 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Phones and other touch screens: iPhones zoom the whole page in when a text
+   box with text under 16px is tapped, and leave it zoomed until you pinch back
+   out. So boxes use 16px text on touch screens (desktop keeps 14px). Pinch
+   zoom itself stays available, since people need it. */
+@media (hover: none) and (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
   }
 }
