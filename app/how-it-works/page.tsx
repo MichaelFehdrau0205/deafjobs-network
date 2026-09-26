@@ -18,6 +18,7 @@ export default async function HowItWorksPage({ searchParams }: PageProps<"/how-i
       links={[
         { href: "/jobs", label: "Browse jobs" },
         { href: "/resources", label: "Resources" },
+        { href: "/privacy", label: "Privacy" },
       ]}
     >
       <h1 className={simple.title}>How it works</h1>

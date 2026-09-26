@@ -14,6 +14,7 @@ export default function ApplicationsPage() {
         { href: "/jobs", label: "Browse jobs" },
         { href: "/profile/new", label: "Your profile" },
         { href: "/resources", label: "Resources" },
+        { href: "/privacy", label: "Privacy" },
       ]}
     >
       <h1 className={simple.title}>Your applications</h1>

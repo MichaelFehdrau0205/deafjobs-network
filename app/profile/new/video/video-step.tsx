@@ -297,6 +297,12 @@ export function VideoStep() {
         speak, whichever is natural for you. Up to 2 minutes. Your profile
         needs a video to be finished.
       </p>
+      <p className={styles.hint}>
+        Your video stays in this browser tab. It isn&rsquo;t uploaded or saved.{" "}
+        <Link className={styles.linkAction} href="/privacy" style={{ minHeight: 0 }}>
+          Read more about privacy
+        </Link>
+      </p>
 
       <p className={styles.srOnly} role="status" aria-live="polite">
         {announce}

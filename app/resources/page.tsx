@@ -123,6 +123,7 @@ export default function ResourcesPage() {
       links={[
         { href: "/jobs", label: "Browse jobs" },
         { href: "/how-it-works", label: "How it works" },
+        { href: "/privacy", label: "Privacy" },
       ]}
     >
       <h1 className={simple.title}>Resources</h1>

@@ -1,0 +1,30 @@
+/* Same scale as the rest of the product: 15px bold blue titles, 14px regular
+   text, thin 1px edges. */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-width: 44rem;
+}
+.item {
+  padding: 1rem 1.15rem;
+  background: #fff;
+  border: 1px solid #7f7f96;
+  border-radius: 8px;
+}
+.question {
+  margin: 0 0 0.4rem;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1400e6;
+}
+.answer {
+  margin: 0 0 0.5rem;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #0b0b1a;
+}
+.answer:last-child {
+  margin-bottom: 0;
+}

@@ -142,7 +142,8 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  opacity: 0.85;
+  /* full strength: at 0.85 opacity the small green label on the blue measured
+     4.3:1, just under the 4.5:1 the small text needs (WCAG 1.4.3) */
 }
 /* the two headers mirror each other across the seam:
    green = text, header, DEAF | blue = JOBS, header, text */
