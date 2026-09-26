@@ -219,8 +219,10 @@
     padding-inline: 0.1em;
     white-space: pre;
   }
+  /* no dot separators between the links on phones: the links are spread
+     evenly across the row instead */
   .page .links li + li::before {
-    padding: 0;
+    content: none;
   }
   .top .links {
     font-size: calc((100vw - 1.5rem) / 28);
