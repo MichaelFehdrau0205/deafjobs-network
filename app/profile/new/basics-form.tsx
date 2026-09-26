@@ -50,6 +50,18 @@ const COMM_PREFERENCE_OPTIONS: CommPreference[] = [
   "both",
 ];
 
+// Adds the dashes as someone types digits: 6469544075 becomes 646-954-4075.
+// A leading 1 (the US country code) is dropped, and anything past 10 digits
+// is ignored.
+function formatPhone(raw: string): string {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.length === 11 && digits[0] === "1") digits = digits.slice(1);
+  digits = digits.slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
 function validate(v: Basics): Errors {
   const errors: Errors = {};
   if (!v.displayName.trim()) errors.displayName = MESSAGES.displayName;
@@ -175,6 +187,7 @@ export function BasicsForm() {
 
         <TextField
           id="displayName"
+          autoCapitalize="words"
           label="Your name"
           hint="The name employers will see."
           autoComplete="name"
@@ -192,6 +205,7 @@ export function BasicsForm() {
 
           <TextField
             id="street"
+            autoCapitalize="words" autoCorrect="off"
             label="Street address"
             placeholder="123 Main Street"
             autoComplete="address-line1"
@@ -202,6 +216,7 @@ export function BasicsForm() {
           />
           <TextField
             id="street2"
+            autoCapitalize="words" autoCorrect="off"
             label="Apartment, suite or unit (optional)"
             placeholder="Apt 4B"
             autoComplete="address-line2"
@@ -211,6 +226,7 @@ export function BasicsForm() {
           />
           <TextField
             id="city"
+            autoCapitalize="words" autoCorrect="off"
             label="City"
             placeholder="Brooklyn"
             autoComplete="address-level2"
@@ -284,10 +300,12 @@ export function BasicsForm() {
                   id="vrsPhone"
                   name="vrsPhone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   className={styles.input}
                   maxLength={20}
                   value={values.vrsPhone}
-                  onChange={(e) => update({ ...values, vrsPhone: e.target.value })}
+                  onChange={(e) => update({ ...values, vrsPhone: formatPhone(e.target.value) })}
                 />
                 <span className={styles.inputSuffix}>VRS</span>
               </div>
@@ -305,10 +323,12 @@ export function BasicsForm() {
                   id="textOrCallPhone"
                   name="textOrCallPhone"
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   className={styles.input}
                   maxLength={20}
                   value={values.textOrCallPhone}
-                  onChange={(e) => update({ ...values, textOrCallPhone: e.target.value })}
+                  onChange={(e) => update({ ...values, textOrCallPhone: formatPhone(e.target.value) })}
                 />
                 <div className={styles.segmented} role="group" aria-label="Text or call">
                   {(["text", "call"] as Exclude<typeof values.phoneContactType, "">[]).map((opt) => (
@@ -371,6 +391,8 @@ export function BasicsForm() {
             <input
               id="work-location-draft"
               type="text"
+              autoCapitalize="words"
+              autoCorrect="off"
               className={styles.input}
               value={locationDraft}
               maxLength={80}
@@ -528,9 +550,11 @@ function TextField(props: {
   maxLength: number;
   autoComplete?: string;
   inputMode?: "numeric";
+  autoCapitalize?: "words" | "none" | "sentences";
+  autoCorrect?: "off" | "on";
   onChange: (value: string) => void;
 }) {
-  const { id, label, hint, placeholder, error, value, maxLength, autoComplete, inputMode, onChange } = props;
+  const { id, label, hint, placeholder, error, value, maxLength, autoComplete, inputMode, autoCapitalize, autoCorrect, onChange } = props;
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
   return (
@@ -553,6 +577,8 @@ function TextField(props: {
         autoComplete={autoComplete}
         placeholder={placeholder}
         inputMode={inputMode}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
         aria-required={error !== undefined ? "true" : undefined}
         aria-invalid={error ? true : undefined}
         aria-describedby={

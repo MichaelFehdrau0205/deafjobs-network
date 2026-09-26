@@ -197,6 +197,9 @@ function AuthFlow({ role, onVerified }: { role: Role; onVerified: (returning: bo
               id="signup-email"
               type="email"
               autoComplete="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               className={styles.textInput}
               value={email}
               aria-invalid={signupError?.field === "email" ? true : undefined}
