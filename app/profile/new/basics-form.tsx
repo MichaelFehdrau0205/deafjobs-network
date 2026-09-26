@@ -105,14 +105,14 @@ export function BasicsForm() {
     let city = locationDraft.replace(/\s*,\s*/g, ", ").replace(/[\s,]+$/, "").trim();
     if (!city) return;
     let state = locationState;
-    // A well-known city on its own ("Boston") gets its state added ("Boston, MA").
+    // A well-known city on its own ("Boston") gets its state or country added ("Boston, MA", "Paris, France").
     // A state picked from the list always wins, and a city with a comma is
     // left exactly as typed.
     if (!state && !city.includes(",")) {
       const known = lookupCity(city);
       if (known) {
         city = known.name;
-        state = known.state;
+        state = known.region;
       }
     }
     const v = state ? `${city}, ${state}` : city;
@@ -403,7 +403,7 @@ export function BasicsForm() {
             Where would you like to work?
           </label>
           <p className={styles.hint}>
-            Add as many cities as you want. Type the city and press Add. For big cities we add the state. If we don&rsquo;t, pick it from the list.
+            Add as many cities as you want. Type the city and press Add. For well-known cities we add the state or country. If we don&rsquo;t, pick the state from the list.
           </p>
           <div className={styles.chipInputRow}>
             <input

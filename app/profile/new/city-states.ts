@@ -1,8 +1,10 @@
-// Well-known US cities and the state each one is in, so someone can type
-// "Boston" and get "Boston, MA". Only cities whose name is not shared with a
-// well-known city in another state are listed: "Springfield", "Portland",
-// "Columbus" and "Charleston" are left out on purpose, so nothing is guessed
-// wrongly. For those, the state list next to the box is used instead.
+// Well-known cities and where each one is (a US state, or a country), so
+// someone can type "Boston" and get "Boston, MA", or "Paris" and get
+// "Paris, France". US cities whose name is shared with another well-known US
+// city ("Springfield", "Portland", "Columbus", "Charleston") are left out on
+// purpose, so nothing is guessed wrongly. For those, and for any city not in
+// the list, the state list next to the box is used instead. A famous city
+// abroad wins over a small US town of the same name (Paris is Paris, France).
 const CITIES: [string, string][] = [
   // New York, New Jersey, Connecticut
   ["New York City", "NY"], ["Brooklyn", "NY"], ["Queens", "NY"], ["The Bronx", "NY"],
@@ -31,6 +33,29 @@ const CITIES: [string, string][] = [
   ["Denver", "CO"], ["Salt Lake City", "UT"], ["Boise", "ID"], ["Seattle", "WA"],
   ["Los Angeles", "CA"], ["San Francisco", "CA"], ["San Diego", "CA"], ["San Jose", "CA"],
   ["Oakland", "CA"], ["Sacramento", "CA"], ["Honolulu", "HI"], ["Anchorage", "AK"],
+  // Canada and Mexico
+  ["Toronto", "Canada"], ["Vancouver", "Canada"], ["Montreal", "Canada"], ["Ottawa", "Canada"],
+  ["Calgary", "Canada"], ["Mexico City", "Mexico"], ["Guadalajara", "Mexico"], ["Cancun", "Mexico"],
+  // Europe
+  ["Paris", "France"], ["London", "UK"], ["Dublin", "Ireland"], ["Berlin", "Germany"],
+  ["Munich", "Germany"], ["Madrid", "Spain"], ["Barcelona", "Spain"], ["Lisbon", "Portugal"],
+  ["Rome", "Italy"], ["Milan", "Italy"], ["Amsterdam", "Netherlands"], ["Brussels", "Belgium"],
+  ["Zurich", "Switzerland"], ["Vienna", "Austria"], ["Prague", "Czechia"], ["Warsaw", "Poland"],
+  ["Stockholm", "Sweden"], ["Copenhagen", "Denmark"], ["Oslo", "Norway"], ["Helsinki", "Finland"],
+  ["Athens", "Greece"], ["Istanbul", "Turkey"], ["Moscow", "Russia"],
+  // Asia and the Middle East
+  ["Tokyo", "Japan"], ["Seoul", "South Korea"], ["Beijing", "China"], ["Shanghai", "China"],
+  ["Hong Kong", "China"], ["Taipei", "Taiwan"], ["Singapore", "Singapore"], ["Bangkok", "Thailand"],
+  ["Manila", "Philippines"], ["Jakarta", "Indonesia"], ["Kuala Lumpur", "Malaysia"],
+  ["Mumbai", "India"], ["New Delhi", "India"], ["Bangalore", "India"], ["Dubai", "UAE"],
+  ["Tel Aviv", "Israel"],
+  // Africa
+  ["Cairo", "Egypt"], ["Lagos", "Nigeria"], ["Nairobi", "Kenya"], ["Johannesburg", "South Africa"],
+  ["Cape Town", "South Africa"],
+  // South America and Australia
+  ["S\u00e3o Paulo", "Brazil"], ["Rio de Janeiro", "Brazil"], ["Buenos Aires", "Argentina"],
+  ["Bogot\u00e1", "Colombia"], ["Lima", "Peru"], ["Santiago", "Chile"],
+  ["Sydney", "Australia"], ["Melbourne", "Australia"], ["Auckland", "New Zealand"],
 ];
 
 // Other ways people type the same place.
@@ -46,17 +71,25 @@ const ALIASES: Record<string, string> = {
   philly: "Philadelphia",
   sf: "San Francisco",
   la: "Los Angeles",
+  delhi: "New Delhi",
+  bombay: "Mumbai",
+  "sao paulo": "S\u00e3o Paulo",
+  bogota: "Bogot\u00e1",
+  rio: "Rio de Janeiro",
+  "mexico city": "Mexico City",
+  "hong kong": "Hong Kong",
 };
 
-const norm = (s: string) => s.toLowerCase().replace(/\./g, "").replace(/\s+/g, " ").trim();
+const norm = (s: string) =>
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\./g, "").replace(/\s+/g, " ").trim();
 
-const BY_NAME = new Map<string, { name: string; state: string }>();
-for (const [name, state] of CITIES) BY_NAME.set(norm(name), { name, state });
+const BY_NAME = new Map<string, { name: string; region: string }>();
+for (const [name, region] of CITIES) BY_NAME.set(norm(name), { name, region });
 
-// "boston" -> { name: "Boston", state: "MA" }. Returns null for a city that
+// "boston" -> { name: "Boston", region: "MA" }; "paris" -> { name: "Paris", region: "France" }. Returns null for a city that
 // isn't in the list (or is shared by several states), so the caller leaves it
 // as typed and the person picks the state from the list.
-export function lookupCity(typed: string): { name: string; state: string } | null {
+export function lookupCity(typed: string): { name: string; region: string } | null {
   const key = norm(typed);
   const aliased = ALIASES[key];
   return BY_NAME.get(aliased ? norm(aliased) : key) ?? null;
